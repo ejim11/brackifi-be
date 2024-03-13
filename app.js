@@ -6,6 +6,8 @@ const subscribersRouter = require('./routes/subscribersRoute');
 
 const app = express();
 
+app.use(cors());
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -17,8 +19,6 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
-app.use(cors('*'));
 
 app.use('/api/v1/subscribers', subscribersRouter);
 
