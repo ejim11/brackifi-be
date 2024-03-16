@@ -17,7 +17,7 @@ const createResearchPost = catchAsync(async (req, res, next) => {
 
 // get all research posts
 const getAllResearchPosts = catchAsync(async (req, res, next) => {
-  const allResearchPosts = await Research.find();
+  const allResearchPosts = await Research.find().select('-__v');
 
   res.status(200).json({
     status: 'success',
