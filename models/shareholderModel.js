@@ -56,6 +56,13 @@ shareholderSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
 });
 
+shareholderSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
 const Shareholder = mongoose.model('Shareholder', shareholderSchema);
 
 module.exports = Shareholder;

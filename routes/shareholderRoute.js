@@ -4,9 +4,14 @@ const {
   getAllPotentialShareHolders,
   getAllShareholders,
 } = require('../controllers/shareholderController');
-const { createShareholder } = require('../controllers/authController');
+const {
+  createShareholder,
+  signInShareholder,
+} = require('../controllers/authController');
 
 const router = express.Router();
+
+router.route('/login').post(signInShareholder);
 
 router
   .route('/potential-shareholders')
