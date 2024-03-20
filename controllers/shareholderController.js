@@ -1,4 +1,5 @@
 const { PotentialShareholder } = require('../models/potentialShareholderModel');
+const Shareholder = require('../models/shareholderModel');
 const catchAsync = require('../utils/catchAsync');
 
 const createPotentialShareholder = catchAsync(async (req, res, next) => {
@@ -33,7 +34,20 @@ const getAllPotentialShareHolders = catchAsync(async (req, res, next) => {
   });
 });
 
+const getAllShareholders = catchAsync(async (req, res, next) => {
+  const allShareholders = await Shareholder.find().select('-__v');
+
+  res.status(200).json({
+    statusbar: 'success',
+    results: allShareholders.length,
+    data: {
+      allShareholders,
+    },
+  });
+});
+
 module.exports = {
   getAllPotentialShareHolders,
   createPotentialShareholder,
+  getAllShareholders,
 };
