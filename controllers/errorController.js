@@ -7,8 +7,8 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  // err.errMsg.match(/(["')(\\?.)*?\1/)
-  const message = `Duplicate field value: "${err.keyValue.name}". Please use another value`;
+  const field = JSON.stringify(err.keyValue).match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: "${field}". Please use another value`;
 
   return new AppError(message, 400);
 };
@@ -50,7 +50,7 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
+    let error = { ...err, message: err.message };
 
     if (err.name === 'CastError') {
       // this error occurs when the id is wrong
@@ -60,6 +60,6 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
 
     if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
-    sendErrorProd(err, res);
+    sendErrorProd(error, res);
   }
 };
