@@ -49,6 +49,7 @@ module.exports = (err, req, res, next) => {
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
+    console.log('localError: ', err.name);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err, message: err.message };
 
@@ -56,6 +57,8 @@ module.exports = (err, req, res, next) => {
       // this error occurs when the id is wrong
       error = handleCastErrorDB(error);
     }
+
+    console.log(err.name);
 
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
 

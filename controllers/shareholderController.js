@@ -5,13 +5,15 @@ const catchAsync = require('../utils/catchAsync');
 const createPotentialShareholder = catchAsync(async (req, res, next) => {
   const potentialShareHolder = await PotentialShareholder.create({
     name: req.body.name,
-    title: req.body.title,
     email: req.body.email,
-    mailingAddress: req.body.mailingAddress,
-    state: req.body.state,
-    city: req.body.city,
-    zipCode: req.body.zipCode,
-    country: req.body.country,
+    phoneNumber: req.body.phoneNumber,
+    proofOfIdentity: req.body.proofOfIdentity,
+    proofOfAddress: req.body.proofOfAddress,
+    nextOfKin: {
+      name: req.body.nextOfKinName,
+      email: req.body.nextOfKinEmail,
+      address: req.body.nextOfKinAddress,
+    },
   });
   res.status(201).json({
     status: 'success',

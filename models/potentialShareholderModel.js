@@ -2,6 +2,26 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+const nextOfKinSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide a next of kin name'],
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide next of kin email address'],
+    lowercase: true,
+    validate: [
+      validator.isEmail,
+      'Please provide a valid email address for next of kin',
+    ],
+  },
+  address: {
+    type: String,
+    required: [true, 'Please provide next of kin address'],
+  },
+});
+
 const potentialShareholderSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,33 +30,30 @@ const potentialShareholderSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: [true, 'Please provide your valid email address'],
+    required: [true, 'Please provide your email address'],
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email address'],
   },
-  mailingAddress: {
+  phoneNumber: {
     type: String,
-    required: [true, 'Please provide a mailing address'],
+    unique: true,
+    required: [true, 'Please provide a phone number'],
+    validate: {
+      validator: (val) =>
+        /(?:\+?(\d{1,3}))?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(val),
+      message: 'Please provide a valid phone number',
+    },
   },
-  title: {
+  proofOfIdentity: {
     type: String,
-    required: [true, 'Please provide a title'],
+    required: [true, 'Please provide a proof of identity'],
   },
-  city: {
+  proofOfAddress: {
     type: String,
-    required: [true, 'Please provide a city'],
+    required: [true, 'Please provide a proof of address'],
   },
-  state: {
-    type: String,
-    required: [true, 'Please provide a state'],
-  },
-  zipCode: {
-    type: String,
-    required: [true, 'Please provide a zip code'],
-  },
-  country: {
-    type: String,
-    required: [true, 'Please provide a country'],
+  nextOfKin: {
+    type: nextOfKinSchema,
   },
 });
 
