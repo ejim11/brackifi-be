@@ -7,6 +7,7 @@ const {
 const {
   createShareholder,
   signInShareholder,
+  protect,
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -15,9 +16,9 @@ router.route('/login').post(signInShareholder);
 
 router
   .route('/potential-shareholders')
-  .get(getAllPotentialShareHolders)
+  .get(protect, getAllPotentialShareHolders)
   .post(createPotentialShareholder);
 
-router.route('/').get(getAllShareholders).post(createShareholder);
+router.route('/').get(protect, getAllShareholders).post(createShareholder);
 
 module.exports = router;
