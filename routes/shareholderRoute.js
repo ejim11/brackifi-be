@@ -8,11 +8,14 @@ const {
   createShareholder,
   signInShareholder,
   protect,
+  forgotPassword,
 } = require('../controllers/authController');
 
 const router = express.Router();
 
 router.route('/login').post(signInShareholder);
+
+router.route('/forgotPassword').post(forgotPassword);
 
 router
   .route('/potential-shareholders')

@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const nextOfKinSchema = new mongoose.Schema({
   name: {
@@ -72,6 +73,9 @@ const shareholderSchema = new mongoose.Schema({
       message: 'Passwords do not match',
     },
   },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 shareholderSchema.pre('save', async function (next) {
@@ -101,6 +105,21 @@ shareholderSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   }
   // false means password not changed.
   return false;
+};
+
+shareholderSchema.methods.createPasswordResetToken = function () {
+  // creating the reset token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // hashing the reset token and storing it in the DB
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 const Shareholder = mongoose.model('Shareholder', shareholderSchema);
