@@ -189,10 +189,36 @@ const resetPassword = catchAsync(async (req, res, next) => {
   createSendToken(shareholder, '200', res);
 });
 
+const updatePassword = catchAsync(async (req, res, next) => {
+  const { passwordCurrent, newPassword, confirmNewPassword } = req.body;
+
+  // 1 get the user from the collection
+  const shareholder = await Shareholder.findById(req.shareholder.id).select(
+    '+password',
+  );
+
+  // 2 check if the posted password is correct
+  if (
+    !shareholder &&
+    !(await shareholder.correctPassword(passwordCurrent, shareholder.password))
+  ) {
+    return next(new AppError('Your current password is wrong', 401));
+  }
+
+  // 3 if the password is correct, update the password
+  shareholder.password = newPassword;
+  shareholder.passwordConfirm = confirmNewPassword;
+  await shareholder.save();
+
+  // 4 login shareholder and send JWt
+  createSendToken(shareholder, '200', res);
+});
+
 module.exports = {
   createShareholder,
   signInShareholder,
   protect,
   forgotPassword,
   resetPassword,
+  updatePassword,
 };
