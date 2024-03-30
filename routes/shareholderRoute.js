@@ -9,6 +9,7 @@ const {
   signInShareholder,
   protect,
   forgotPassword,
+  resetPassword,
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -16,6 +17,7 @@ const router = express.Router();
 router.route('/login').post(signInShareholder);
 
 router.route('/forgotPassword').post(forgotPassword);
+router.patch('/resetPassword/:token', resetPassword);
 
 router
   .route('/potential-shareholders')

@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const crypto = require('crypto');
 const Shareholder = require('../models/shareholderModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -10,6 +11,18 @@ const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRESIN,
   });
+
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  return res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
 
 const createShareholder = catchAsync(async (req, res, next) => {
   const newShareholder = await Shareholder.create({
@@ -27,12 +40,7 @@ const createShareholder = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      newShareholder,
-    },
-  });
+  createSendToken(newShareholder, '201', res);
 });
 
 const signInShareholder = catchAsync(async (req, res, next) => {
@@ -56,15 +64,7 @@ const signInShareholder = catchAsync(async (req, res, next) => {
 
   // if everything is ok, send the token to the client
 
-  const token = signToken(shareholder._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-    data: {
-      shareholder,
-    },
-  });
+  createSendToken(shareholder, '201', res);
 });
 
 // middleware to protect tours route
@@ -159,9 +159,40 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+const resetPassword = catchAsync(async (req, res, next) => {
+  // 1 Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const shareholder = await Shareholder.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  // 2 if the token has not expired and there is a user, set the password
+  if (!shareholder) {
+    return next(new AppError('Token is invalid or has expired', 400));
+  }
+
+  shareholder.password = req.body.password;
+  shareholder.passwordConfirm = req.body.passwordConfirm;
+  shareholder.passwordResetToken = undefined;
+  shareholder.passwordResetExpires = undefined;
+  await shareholder.save();
+
+  // 3 update changePasswordAt property for the shareholder
+  // This is updated on every save
+
+  // 4 login the shareholder in, send JWT
+  createSendToken(shareholder, '200', res);
+});
+
 module.exports = {
   createShareholder,
   signInShareholder,
   protect,
   forgotPassword,
+  resetPassword,
 };
