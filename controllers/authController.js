@@ -127,9 +127,11 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 3 send it to the users email
-  const resetURL = `${req.protocol}://${req.get(
-    'host',
-  )}/api/v1/users/reserPassword/${resetToken}`;
+  // const resetURL = `${req.protocol}://${req.get(
+  //   'host',
+  // )}/api/v1/users/reserPassword/${resetToken}`;
+
+  const resetURL = `http://localhost:3000/auth/reset-password/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
 
@@ -139,6 +141,19 @@ const forgotPassword = catchAsync(async (req, res, next) => {
       subject: 'Your password reset token (valid for 10min)',
       message,
     });
+
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+      ),
+      // this ensures xss attacks can not access the cookie
+      httpOnly: true,
+    };
+
+    // secure as true means it has to https
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', resetToken, cookieOptions);
 
     res.status(200).json({
       status: 'success',
