@@ -15,6 +15,8 @@ const signToken = (id) =>
 const createSendToken = (shareholder, statusCode, res) => {
   const token = signToken(shareholder._id);
 
+  shareholder.password = undefined;
+
   return res.status(statusCode).json({
     status: 'success',
     token,

@@ -51,6 +51,15 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteMe = catchAsync(async (req, res, next) => {
+  await Shareholder.findByIdAndUpdate(req.shareholder.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const createPotentialShareholder = catchAsync(async (req, res, next) => {
   const potentialShareHolder = await PotentialShareholder.create({
     name: req.body.name,
@@ -102,4 +111,5 @@ module.exports = {
   createPotentialShareholder,
   getAllShareholders,
   updateMe,
+  deleteMe,
 };
