@@ -5,6 +5,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
 const subscribersRouter = require('./routes/subscribersRoute');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -29,6 +30,10 @@ app.use(cors());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Data sanitization against no-sql query inject and cross site attacks
+// prevents query injections
+app.use(mongoSanitize());
 
 // limit requests from api
 const limiter = rateLimit({
