@@ -83,6 +83,13 @@ const shareholderSchema = new mongoose.Schema({
   },
 });
 
+shareholderSchema.pre(/^find/, function (next) {
+  // (this) points to the current query
+
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 shareholderSchema.pre('save', async function (next) {
   // run func if password was modified
   if (!this.isModified('password')) return next();
