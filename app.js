@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 const subscribersRouter = require('./routes/subscribersRoute');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -52,6 +53,21 @@ app.use(express.static(`${__dirname}/public`));
 
 // prevents xss attacks
 app.use(xss());
+
+// prevents parameter pollution
+// try getting the field names from the model
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  }),
+);
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
