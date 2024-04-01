@@ -3,6 +3,7 @@ const {
   createPotentialShareholder,
   getAllPotentialShareHolders,
   getAllShareholders,
+  updateMe,
 } = require('../controllers/shareholderController');
 const {
   createShareholder,
@@ -20,6 +21,7 @@ router.route('/login').post(signInShareholder);
 router.route('/forgotPassword').post(forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
 router.patch('/updateMyPassword', protect, updatePassword);
+router.patch('/updateMe', protect, updateMe);
 
 router
   .route('/potential-shareholders')
