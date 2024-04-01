@@ -15,6 +15,19 @@ const signToken = (id) =>
 const createSendToken = (shareholder, statusCode, res) => {
   const token = signToken(shareholder._id);
 
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    // this ensures xss attacks can not access the cookie
+    httpOnly: true,
+  };
+
+  // secure as true means it has to https
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+  res.cookie('jwt', token, cookieOptions);
+
   shareholder.password = undefined;
 
   return res.status(statusCode).json({
@@ -155,7 +168,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     // secure as true means it has to https
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-    res.cookie('jwt', resetToken, cookieOptions);
+    res.cookie('resetToken', resetToken, cookieOptions);
 
     res.status(200).json({
       status: 'success',
