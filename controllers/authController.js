@@ -12,14 +12,14 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRESIN,
   });
 
-const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+const createSendToken = (shareholder, statusCode, res) => {
+  const token = signToken(shareholder._id);
 
   return res.status(statusCode).json({
     status: 'success',
     token,
     data: {
-      user,
+      shareholder,
     },
   });
 };
@@ -40,7 +40,7 @@ const createShareholder = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  createSendToken(newShareholder, '201', res);
+  createSendToken(newShareholder, 201, res);
 });
 
 const signInShareholder = catchAsync(async (req, res, next) => {
@@ -64,7 +64,7 @@ const signInShareholder = catchAsync(async (req, res, next) => {
 
   // if everything is ok, send the token to the client
 
-  createSendToken(shareholder, '201', res);
+  createSendToken(shareholder, 200, res);
 });
 
 // middleware to protect tours route
@@ -201,7 +201,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
   // This is updated on every save
 
   // 4 login the shareholder in, send JWT
-  createSendToken(shareholder, '200', res);
+  createSendToken(shareholder, 200, res);
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
@@ -226,7 +226,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   await shareholder.save();
 
   // 4 login shareholder and send JWt
-  createSendToken(shareholder, '200', res);
+  createSendToken(shareholder, 200, res);
 });
 
 module.exports = {
