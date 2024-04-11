@@ -23,7 +23,7 @@ const createSendToken = (shareholder, statusCode, res) => {
     httpOnly: true,
   };
 
-  // secure as true means it has to https
+  // secure as true means it has to be https
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
@@ -44,6 +44,7 @@ const createShareholder = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
     proofOfIdentity: req.body.proofOfIdentity,
     proofOfAddress: req.body.proofOfAddress,
     nextOfKin: {

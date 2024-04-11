@@ -29,6 +29,10 @@ const shareholderSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A name is required'],
   },
+  address: {
+    type: String,
+    required: [true, 'Please provide an address'],
+  },
   email: {
     type: String,
     unique: true,
