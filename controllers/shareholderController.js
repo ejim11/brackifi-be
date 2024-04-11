@@ -28,7 +28,16 @@ const updateMe = catchAsync(async (req, res, next) => {
 
   // Update user document
   // filter the fields to what you want to change
-  const filteredBody = filterObj(req.body, 'name', 'email');
+  const filteredBody = filterObj(
+    req.body,
+    'name',
+    'email',
+    'address',
+    'phoneNumber',
+    'nextOfKinName',
+    'nextOfKinEmail',
+    'nextOfKinAddress',
+  );
 
   // updated the user
   const updatedUser = await Shareholder.findByIdAndUpdate(
