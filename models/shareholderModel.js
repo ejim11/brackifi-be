@@ -24,6 +24,11 @@ const nextOfKinSchema = new mongoose.Schema({
   },
 });
 
+const roiGraphSchema = new mongoose.Schema({
+  amount: Number,
+  month: String,
+});
+
 const shareholderSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -84,6 +89,17 @@ const shareholderSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     select: false,
+  },
+  shareValue: Number,
+  roi: Number,
+  maxDrawdown: {
+    type: Number,
+    required: [true, 'Please provide a maximum drawdown'],
+  },
+  nextPayout: Date,
+  payoutAvailable: Number,
+  roiGraphData: {
+    type: [roiGraphSchema],
   },
 });
 
