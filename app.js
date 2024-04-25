@@ -13,6 +13,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const researchRouter = require('./routes/researchRoute');
 const shareholderRouter = require('./routes/shareholderRoute');
 const reportRouter = require('./routes/docsAndReportsRoute');
+const shareValueRouter = require('./routes/shareValueRoute');
 
 const app = express();
 // set security http headers
@@ -79,6 +80,7 @@ app.use('/api/v1/subscribers', subscribersRouter);
 app.use('/api/v1/researches', researchRouter);
 app.use('/api/v1/shareholders', shareholderRouter);
 app.use('/api/v1/reports', reportRouter);
+app.use('/api/v1/sharevalue', shareValueRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} at the moment`, 404));

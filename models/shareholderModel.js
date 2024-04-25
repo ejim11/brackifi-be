@@ -24,10 +24,12 @@ const nextOfKinSchema = new mongoose.Schema({
   },
 });
 
-const roiGraphSchema = new mongoose.Schema({
-  amount: Number,
-  month: String,
-});
+// const shareValueSchema = new mongoose.Schema({
+//   return: {
+//     type: Number,
+//     required: [true, 'Please provide a return']
+//   },
+// });
 
 const shareholderSchema = new mongoose.Schema({
   name: {
@@ -90,7 +92,6 @@ const shareholderSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
-  shareValue: Number,
   roi: Number,
   maxDrawdown: {
     type: Number,
@@ -98,8 +99,10 @@ const shareholderSchema = new mongoose.Schema({
   },
   nextPayout: Date,
   payoutAvailable: Number,
-  roiGraphData: {
-    type: [roiGraphSchema],
+
+  shareValue: {
+    type: Number,
+    default: 0,
   },
 });
 
