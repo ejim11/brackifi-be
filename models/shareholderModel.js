@@ -96,6 +96,7 @@ const shareholderSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  image: String,
 });
 
 shareholderSchema.pre(/^find/, function (next) {
