@@ -92,14 +92,6 @@ const shareholderSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
-  roi: Number,
-  maxDrawdown: {
-    type: Number,
-    required: [true, 'Please provide a maximum drawdown'],
-  },
-  nextPayout: Date,
-  payoutAvailable: Number,
-
   shareValue: {
     type: Number,
     default: 0,
