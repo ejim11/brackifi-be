@@ -13,7 +13,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
-} = require('../controllers/authController');
+} = require('../controllers/shareholderAuthController');
 
 const router = express.Router();
 
