@@ -4,34 +4,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const nextOfKinSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please provide a next of kin name'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Please provide next of kin email address'],
-    lowercase: true,
-    validate: [
-      validator.isEmail,
-      'Please provide a valid email address for next of kin',
-    ],
-  },
-  address: {
-    type: String,
-    required: [true, 'Please provide next of kin address'],
-  },
-});
-
-// const shareValueSchema = new mongoose.Schema({
-//   return: {
-//     type: Number,
-//     required: [true, 'Please provide a return']
-//   },
-// });
-
-const shareholderSchema = new mongoose.Schema({
+const investorSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A name is required'],
@@ -65,9 +38,6 @@ const shareholderSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a proof of address'],
   },
-  nextOfKin: {
-    type: nextOfKinSchema,
-  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
@@ -99,14 +69,14 @@ const shareholderSchema = new mongoose.Schema({
   image: String,
 });
 
-shareholderSchema.pre(/^find/, function (next) {
+investorSchema.pre(/^find/, function (next) {
   // (this) points to the current query
 
   this.find({ active: { $ne: false } });
   next();
 });
 
-shareholderSchema.pre('save', async function (next) {
+investorSchema.pre('save', async function (next) {
   // run func if password was modified
   if (!this.isModified('password')) return next();
 
@@ -115,21 +85,21 @@ shareholderSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
 });
 
-shareholderSchema.pre('save', async function (next) {
+investorSchema.pre('save', async function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
-shareholderSchema.methods.correctPassword = async function (
+investorSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-shareholderSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+investorSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -142,7 +112,7 @@ shareholderSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-shareholderSchema.methods.createPasswordResetToken = function () {
+investorSchema.methods.createPasswordResetToken = function () {
   // creating the reset token
   const resetToken = crypto.randomBytes(32).toString('hex');
 
@@ -157,6 +127,6 @@ shareholderSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const Shareholder = mongoose.model('Shareholder', shareholderSchema);
+const Shareholder = mongoose.model('Investor', investorSchema);
 
 module.exports = Shareholder;
