@@ -68,7 +68,7 @@ const signInInvestor = catchAsync(async (req, res, next) => {
 
   if (
     !investor ||
-    !(await Investor.correctPassword(password, investor.password))
+    !(await investor.correctPassword(password, investor.password))
   ) {
     return next(new AppError('Incorrect email or password', 401));
   }
