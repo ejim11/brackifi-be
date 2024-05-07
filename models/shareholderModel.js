@@ -96,13 +96,13 @@ const shareholderSchema = new mongoose.Schema({
     max: [100, 'share roi must be below or equal to 100'],
     set: (value) => Math.round(value * 10) / 10,
   },
-  shareData: [
-    {
-      dateCreated: { type: Date, Default: Date.now() },
-      shareCost: Number,
-      sharesBought: Number,
-    },
-  ],
+  // shareData: [
+  //   {
+  //     dateCreated: { type: Date, Default: Date.now() },
+  //     shareCost: Number,
+  //     sharesBought: Number,
+  //   },
+  // ],
   image: String,
 });
 
