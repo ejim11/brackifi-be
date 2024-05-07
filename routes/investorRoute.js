@@ -26,7 +26,7 @@ router.patch('/updateMe', protect, updateMe);
 router.delete('/deleteMe', protect, deleteMe);
 
 router
-  .route('/potential-InvestgetAllPotentialInvestors')
+  .route('/potential-investors')
   .get(protect, getAllPotentialInvestors)
   .post(createPotentialInvestor);
 
