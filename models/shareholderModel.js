@@ -24,13 +24,6 @@ const nextOfKinSchema = new mongoose.Schema({
   },
 });
 
-// const shareValueSchema = new mongoose.Schema({
-//   return: {
-//     type: Number,
-//     required: [true, 'Please provide a return']
-//   },
-// });
-
 const shareholderSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -96,6 +89,20 @@ const shareholderSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  shareROI: {
+    type: Number,
+    default: 0,
+    min: [0, 'share roi must be above or equal to 0'],
+    max: [100, 'share roi must be below or equal to 100'],
+    set: (value) => Math.round(value * 10) / 10,
+  },
+  shareData: [
+    {
+      dateCreated: { type: Date, Default: Date.now() },
+      shareCost: Number,
+      sharesBought: Number,
+    },
+  ],
   image: String,
 });
 
