@@ -18,6 +18,19 @@ const ordersSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  shareCost: {
+    type: Number,
+    required: [true, 'Please provide a share cost'],
+  },
+  orderStatus: {
+    type: String,
+    enum: ['verifying', 'verified', 'failed'],
+    required: [true, 'Please provide an order status'],
+  },
+  shareholder: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Shareholder',
+  },
 });
 
 const Orders = mongoose.model('Orders', ordersSchema);
