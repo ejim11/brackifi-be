@@ -77,36 +77,35 @@ const shareholderSchema = new mongoose.Schema({
       message: 'Passwords do not match',
     },
   },
+  createdAt: { type: Date, default: Date.now() },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  role: {
+    type: String,
+    default: 'shareholder',
+    enum: ['shareholder'],
+  },
   active: {
     type: Boolean,
     default: true,
     select: false,
   },
-  shareValue: {
+  shareholding: {
     type: Number,
     default: 0,
   },
-  shareROI: {
-    type: Number,
-    default: 0,
-    min: [0, 'share roi must be above or equal to 0'],
-    max: [100, 'share roi must be below or equal to 100'],
-    set: (value) => Math.round(value * 10) / 10,
-  },
-  // shareData: [
-  //   {
-  //     dateCreated: { type: Date, Default: Date.now() },
-  //     shareCost: Number,
-  //     sharesBought: Number,
-  //   },
-  // ],
   image: String,
 });
 
-shareholderSchema.pre(/^find/, function (next) {
+// virtual populate
+shareholderSchema.virtual('orders', {
+  ref: 'Orders',
+  foreignField: 'shareholder',
+  localField: '_id',
+});
+
+shareholderSchema.pre(/^find/, async function (next) {
   // (this) points to the current query
 
   this.find({ active: { $ne: false } });
