@@ -1,65 +1,16 @@
-const catchAsync = require('../utils/catchAsync');
 const DocsAndReports = require('../models/documentAndReportsModel');
-const AppError = require('../utils/appError');
+const { createOne, getAllDocs, getOne, deleteOne } = require('./handleFactory');
 
 // create a report
-const createDocAndReport = catchAsync(async (req, res, next) => {
-  const report = await DocsAndReports.create({
-    title: req.body.title,
-    summary: req.body.summary,
-    date: req.body.date,
-    image: req.body.image,
-  });
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      report,
-    },
-  });
-});
+const createDocAndReport = createOne(DocsAndReports);
 
 // get all reports
-const getAllReports = catchAsync(async (req, res, next) => {
-  const allReports = await DocsAndReports.find().select('-__v');
-
-  res.status(200).json({
-    status: 'success',
-    results: allReports.length,
-    data: {
-      allReports,
-    },
-  });
-});
+const getAllReports = getAllDocs(DocsAndReports);
 
 // get a report
-const getReport = catchAsync(async (req, res, next) => {
-  const report = await DocsAndReports.findById(req.params.id);
-
-  if (!report) {
-    return next(AppError('Could not find report', 404));
-  }
-
-  res.status(200).json({
-    status: ' success',
-    data: report,
-  });
-});
+const getReport = getOne(DocsAndReports);
 
 // delete a report
-const deleteReport = catchAsync(async (req, res, next) => {
-  const deletedResearchPost = await DocsAndReports.findByIdAndDelete(
-    req.params.id,
-  );
-
-  if (!deletedResearchPost) {
-    return next(new AppError('Could not find report', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+const deleteReport = deleteOne(DocsAndReports);
 
 module.exports = { createDocAndReport, getAllReports, deleteReport, getReport };

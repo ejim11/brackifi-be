@@ -2,6 +2,7 @@ const { PotentialShareholder } = require('../models/potentialShareholderModel');
 const Shareholder = require('../models/shareholderModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const { createOne, getAllDocs } = require('./handleFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -69,53 +70,11 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-const createPotentialShareholder = catchAsync(async (req, res, next) => {
-  const potentialShareHolder = await PotentialShareholder.create({
-    name: req.body.name,
-    email: req.body.email,
-    phoneNumber: req.body.phoneNumber,
-    proofOfIdentity: req.body.proofOfIdentity,
-    proofOfAddress: req.body.proofOfAddress,
-    nextOfKin: {
-      name: req.body.nextOfKinName,
-      email: req.body.nextOfKinEmail,
-      address: req.body.nextOfKinAddress,
-    },
-  });
-  res.status(201).json({
-    status: 'success',
-    data: {
-      potentialShareHolder,
-    },
-  });
-});
+const createPotentialShareholder = createOne(PotentialShareholder);
 
-const getAllPotentialShareHolders = catchAsync(async (req, res, next) => {
-  const allPotentialShareholders =
-    await PotentialShareholder.find().select('-__v');
+const getAllPotentialShareHolders = getAllDocs(PotentialShareholder);
 
-  res.status(200).json({
-    status: 'success',
-    results: allPotentialShareholders.length,
-    data: {
-      allPotentialShareholders,
-    },
-  });
-});
-
-const getAllShareholders = catchAsync(async (req, res, next) => {
-  const allShareholders = await Shareholder.find()
-    .select('-__v')
-    .populate({ path: 'orders', select: 'orderType -shareholder' });
-
-  res.status(200).json({
-    statusbar: 'success',
-    results: allShareholders.length,
-    data: {
-      allShareholders,
-    },
-  });
-});
+const getAllShareholders = getAllDocs(Shareholder);
 
 module.exports = {
   getAllPotentialShareHolders,
