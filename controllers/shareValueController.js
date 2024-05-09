@@ -1,6 +1,7 @@
-const shareValueModel = require('../models/shareValueModel');
+const ShareValue = require('../models/shareValueModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const { getOne, createOne } = require('./handleFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -13,22 +14,13 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 //create share value
-const createShareValue = catchAsync(async (req, res, next) => {
-  const shareValueData = await shareValueModel.create({
-    value: req.body.value,
-  });
-
-  res.status(201).json({
-    status: 'success',
-    data: shareValueData,
-  });
-});
+const createShareValue = createOne(ShareValue);
 
 // update share value
 const updateShareValue = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'value');
 
-  const updatedValue = await shareValueModel.findByIdAndUpdate(
+  const updatedValue = await ShareValue.findByIdAndUpdate(
     req.params.id,
     filteredBody,
     {
@@ -46,24 +38,11 @@ const updateShareValue = catchAsync(async (req, res, next) => {
 });
 
 // get share value info
-const getShareValue = catchAsync(async (req, res, next) => {
-  const shareValue = await shareValueModel.findById(req.params.id);
-
-  if (!shareValue) {
-    return next(new AppError('No share value found', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      value: shareValue,
-    },
-  });
-});
+const getShareValue = getOne(ShareValue);
 
 // update share value history
 const updateShareValueHistory = catchAsync(async (req, res, next) => {
-  const shareValue = await shareValueModel.findById(req.params.id);
+  const shareValue = await ShareValue.findById(req.params.id);
 
   if (!shareValue) {
     return next(new AppError('No share value found', 404));

@@ -23,6 +23,6 @@ const shareValueSchema = new mongoose.Schema({
   },
 });
 
-const shareValueModel = mongoose.model('ShareValue', shareValueSchema);
+const ShareValue = mongoose.model('ShareValue', shareValueSchema);
 
-module.exports = shareValueModel;
+module.exports = ShareValue;
