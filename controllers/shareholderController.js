@@ -104,7 +104,9 @@ const getAllPotentialShareHolders = catchAsync(async (req, res, next) => {
 });
 
 const getAllShareholders = catchAsync(async (req, res, next) => {
-  const allShareholders = await Shareholder.find().select('-__v');
+  const allShareholders = await Shareholder.find()
+    .select('-__v')
+    .populate({ path: 'orders', select: 'orderType -shareholder' });
 
   res.status(200).json({
     statusbar: 'success',

@@ -24,82 +24,96 @@ const nextOfKinSchema = new mongoose.Schema({
   },
 });
 
-// const shareValueSchema = new mongoose.Schema({
-//   return: {
-//     type: Number,
-//     required: [true, 'Please provide a return']
-//   },
-// });
-
-const shareholderSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'A name is required'],
-  },
-  address: {
-    type: String,
-    required: [true, 'Please provide an address'],
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, 'Please provide your email address'],
-    lowercase: true,
-    validate: [validator.isEmail, 'Please provide a valid email address'],
-  },
-  phoneNumber: {
-    type: String,
-    unique: true,
-    required: [true, 'Please provide a phone number'],
-    validate: {
-      validator: (val) =>
-        /(?:\+?(\d{1,3}))?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(val),
-      message: 'Please provide a valid phone number',
+const shareholderSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'A name is required'],
     },
-  },
-  proofOfIdentity: {
-    type: String,
-    required: [true, 'Please provide a proof of identity'],
-  },
-  proofOfAddress: {
-    type: String,
-    required: [true, 'Please provide a proof of address'],
-  },
-  nextOfKin: {
-    type: nextOfKinSchema,
-  },
-  password: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    minLength: 8,
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    validate: {
-      validator: function (el) {
-        return el === this.password;
+    address: {
+      type: String,
+      required: [true, 'Please provide an address'],
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: [true, 'Please provide your email address'],
+      lowercase: true,
+      validate: [validator.isEmail, 'Please provide a valid email address'],
+    },
+    phoneNumber: {
+      type: String,
+      unique: true,
+      required: [true, 'Please provide a phone number'],
+      validate: {
+        validator: (val) =>
+          /(?:\+?(\d{1,3}))?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(
+            val,
+          ),
+        message: 'Please provide a valid phone number',
       },
-      message: 'Passwords do not match',
     },
+    proofOfIdentity: {
+      type: String,
+      required: [true, 'Please provide a proof of identity'],
+    },
+    proofOfAddress: {
+      type: String,
+      required: [true, 'Please provide a proof of address'],
+    },
+    nextOfKin: {
+      type: nextOfKinSchema,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide a password'],
+      minLength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, 'Please provide a password'],
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: 'Passwords do not match',
+      },
+    },
+    createdAt: { type: Date, default: Date.now() },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    role: {
+      type: String,
+      default: 'shareholder',
+      enum: ['shareholder'],
+    },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
+    shareholding: {
+      type: Number,
+      default: 0,
+    },
+    image: String,
   },
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
-  shareValue: {
-    type: Number,
-    default: 0,
-  },
-  image: String,
+);
+
+// virtual populate
+shareholderSchema.virtual('orders', {
+  ref: 'Orders',
+  foreignField: 'shareholder',
+  localField: '_id',
 });
 
-shareholderSchema.pre(/^find/, function (next) {
+shareholderSchema.pre(/^find/, async function (next) {
   // (this) points to the current query
 
   this.find({ active: { $ne: false } });
