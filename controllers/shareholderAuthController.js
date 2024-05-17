@@ -40,21 +40,7 @@ const createSendToken = (shareholder, statusCode, res) => {
 };
 
 const createShareholder = catchAsync(async (req, res, next) => {
-  const newShareholder = await Shareholder.create({
-    name: req.body.name,
-    email: req.body.email,
-    phoneNumber: req.body.phoneNumber,
-    address: req.body.address,
-    proofOfIdentity: req.body.proofOfIdentity,
-    proofOfAddress: req.body.proofOfAddress,
-    nextOfKin: {
-      name: req.body.nextOfKinName,
-      email: req.body.nextOfKinEmail,
-      address: req.body.nextOfKinAddress,
-    },
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  });
+  const newShareholder = await Shareholder.create(req.body);
 
   createSendToken(newShareholder, 201, res);
 });
@@ -69,7 +55,9 @@ const signInShareholder = catchAsync(async (req, res, next) => {
 
   // check if the user exists and password is correct
 
-  const shareholder = await Shareholder.findOne({ email }).select('+password');
+  const shareholder = await Shareholder.findOne({ email })
+    .select('+password')
+    .populate({ path: 'orders' });
 
   if (
     !shareholder ||
