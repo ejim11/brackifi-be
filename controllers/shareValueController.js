@@ -1,7 +1,7 @@
 const ShareValue = require('../models/shareValueModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const { getOne, createOne } = require('./handleFactory');
+const { createOne } = require('./handleFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -38,7 +38,22 @@ const updateShareValue = catchAsync(async (req, res, next) => {
 });
 
 // get share value info
-const getShareValue = getOne(ShareValue);
+const getShareValue = catchAsync(async (req, res, next) => {
+  const shareValue = await ShareValue.findById(req.params.id);
+
+  if (!shareValue) return next(new AppError('Share value not found', 404));
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      shareValue: {
+        _id: shareValue._id,
+        value: shareValue.value,
+        history: shareValue.history.slice(-12),
+      },
+    },
+  });
+});
 
 // update share value history
 const updateShareValueHistory = catchAsync(async (req, res, next) => {
@@ -48,7 +63,7 @@ const updateShareValueHistory = catchAsync(async (req, res, next) => {
     return next(new AppError('No share value found', 404));
   }
 
-  shareValue.history = [req.body, ...shareValue.history];
+  shareValue.history = [...shareValue.history, req.body];
   shareValue.save();
 
   res.status(200).json({
