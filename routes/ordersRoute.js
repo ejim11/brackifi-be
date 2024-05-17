@@ -9,7 +9,7 @@ const {
 } = require('../controllers/orderController');
 const { protect } = require('../controllers/shareholderAuthController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
