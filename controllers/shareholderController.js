@@ -2,7 +2,7 @@ const { PotentialShareholder } = require('../models/potentialShareholderModel');
 const Shareholder = require('../models/shareholderModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const { createOne, getAllDocs } = require('./handleFactory');
+const { createOne, getAllDocs, getOne } = require('./handleFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -70,6 +70,8 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+const getShareholder = getOne(Shareholder, { path: 'orders' });
+
 const createPotentialShareholder = createOne(PotentialShareholder);
 
 const getAllPotentialShareHolders = getAllDocs(PotentialShareholder);
@@ -82,4 +84,5 @@ module.exports = {
   getAllShareholders,
   updateMe,
   deleteMe,
+  getShareholder,
 };
