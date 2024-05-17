@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.route('/').post(createShareValue);
 
-router.route('/updatevaluehistory/:id').patch(updateShareValueHistory);
+router.route('/updatevaluehistory/:id').put(updateShareValueHistory);
 
 router.route('/:id').get(getShareValue).patch(updateShareValue);
 
