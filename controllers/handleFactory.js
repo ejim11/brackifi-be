@@ -38,7 +38,7 @@ const createOne = (Model) =>
     res.status(201).json({
       status: 'success',
       data: {
-        data: doc,
+        doc,
       },
     });
   });
@@ -66,10 +66,11 @@ const getOne = (Model, popOptions) =>
 const getAllDocs = (Model) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested get reviews on tour
-    // let filteredObj = {};
-    // if (req.params.tourId) filteredObj = { tour: req.params.tourId };
+    let filteredObj = {};
+    if (req.params.shareholderId)
+      filteredObj = { shareholder: req.params.shareholderId };
 
-    const features = new APIFeatures(Model.find({}), req.query)
+    const features = new APIFeatures(Model.find(filteredObj), req.query)
       .sort()
       .limitFields()
       .paginate()
@@ -89,7 +90,7 @@ const getAllDocs = (Model) =>
       requestedAt: req.requestTime,
       results: docs.length,
       data: {
-        data: docs,
+        docs,
       },
     });
   });

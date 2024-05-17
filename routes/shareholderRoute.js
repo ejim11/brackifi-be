@@ -5,6 +5,7 @@ const {
   getAllShareholders,
   updateMe,
   deleteMe,
+  getShareholder,
 } = require('../controllers/shareholderController');
 const {
   createShareholder,
@@ -14,8 +15,11 @@ const {
   resetPassword,
   updatePassword,
 } = require('../controllers/shareholderAuthController');
+const ordersRouter = require('./ordersRoute');
 
 const router = express.Router();
+
+router.use('/:shareholderId/orders', ordersRouter);
 
 router.route('/login').post(signInShareholder);
 
@@ -31,5 +35,7 @@ router
   .post(createPotentialShareholder);
 
 router.route('/').get(protect, getAllShareholders).post(createShareholder);
+
+router.route('/:id').get(getShareholder);
 
 module.exports = router;
