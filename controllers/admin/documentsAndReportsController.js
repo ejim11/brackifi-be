@@ -1,5 +1,10 @@
-const DocsAndReports = require('../models/documentAndReportsModel');
-const { createOne, getAllDocs, getOne, deleteOne } = require('./handleFactory');
+const DocsAndReports = require('../../models/documentAndReportsModel');
+const {
+  createOne,
+  getAllDocs,
+  getOne,
+  deleteOne,
+} = require('../handleFactory');
 
 // create a report
 const createDocAndReport = createOne(DocsAndReports);

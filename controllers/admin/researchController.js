@@ -1,5 +1,5 @@
-const Research = require('../models/researchModel');
-const { createOne, getAllDocs, deleteOne } = require('./handleFactory');
+const Research = require('../../models/researchModel');
+const { createOne, getAllDocs, deleteOne } = require('../handleFactory');
 
 // resources to handle
 // create a research post

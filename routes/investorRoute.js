@@ -5,7 +5,7 @@ const {
   updateMe,
   deleteMe,
   getAllInvestors,
-} = require('../controllers/investorController');
+} = require('../controllers/investors/investorController');
 const {
   createInvestor,
   signInInvestor,
@@ -13,7 +13,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
-} = require('../controllers/investorAuthController');
+} = require('../controllers/investors/investorAuthController');
 
 const router = express.Router();
 

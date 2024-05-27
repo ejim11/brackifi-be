@@ -2,18 +2,18 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
-const Shareholder = require('../models/shareholderModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+const Investor = require('../../models/investorModel');
+const catchAsync = require('../../utils/catchAsync');
+const AppError = require('../../utils/appError');
+const sendEmail = require('../../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRESIN,
   });
 
-const createSendToken = (shareholder, statusCode, res) => {
-  const token = signToken(shareholder._id);
+const createSendToken = (investor, statusCode, res) => {
+  const token = signToken(investor._id);
 
   const cookieOptions = {
     expires: new Date(
@@ -28,24 +28,33 @@ const createSendToken = (shareholder, statusCode, res) => {
 
   res.cookie('jwt', token, cookieOptions);
 
-  shareholder.password = undefined;
+  investor.password = undefined;
 
   return res.status(statusCode).json({
     status: 'success',
     token,
     data: {
-      shareholder,
+      investor,
     },
   });
 };
 
-const createShareholder = catchAsync(async (req, res, next) => {
-  const newShareholder = await Shareholder.create(req.body);
+const createInvestor = catchAsync(async (req, res, next) => {
+  const newInvestor = await Investor.create({
+    name: req.body.name,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
+    proofOfIdentity: req.body.proofOfIdentity,
+    proofOfAddress: req.body.proofOfAddress,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
 
-  createSendToken(newShareholder, 201, res);
+  createSendToken(newInvestor, 201, res);
 });
 
-const signInShareholder = catchAsync(async (req, res, next) => {
+const signInInvestor = catchAsync(async (req, res, next) => {
   //   check if email and password already exist
   const { email, password } = req.body;
 
@@ -55,20 +64,18 @@ const signInShareholder = catchAsync(async (req, res, next) => {
 
   // check if the user exists and password is correct
 
-  const shareholder = await Shareholder.findOne({ email })
-    .select('+password')
-    .populate({ path: 'orders' });
+  const investor = await Investor.findOne({ email }).select('+password');
 
   if (
-    !shareholder ||
-    !(await shareholder.correctPassword(password, shareholder.password))
+    !investor ||
+    !(await investor.correctPassword(password, investor.password))
   ) {
     return next(new AppError('Incorrect email or password', 401));
   }
 
   // if everything is ok, send the token to the client
 
-  createSendToken(shareholder, 200, res);
+  createSendToken(investor, 200, res);
 });
 
 // middleware to protect tours route
@@ -98,7 +105,7 @@ const protect = catchAsync(async (req, res, next) => {
   // console.log(decoded);
 
   // 3) check if the user still exists
-  const currentUser = await Shareholder.findById(decoded.id);
+  const currentUser = await Investor.findById(decoded.id);
 
   if (!currentUser) {
     return next(
@@ -114,21 +121,21 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   // Grant access to protected route
-  req.shareholder = currentUser;
+  req.investor = currentUser;
   next();
 });
 
 const forgotPassword = catchAsync(async (req, res, next) => {
   // 1 get user based on posted email
-  const user = await Shareholder.findOne({ email: req.body.email });
+  const investor = await Investor.findOne({ email: req.body.email });
 
-  if (!user) {
+  if (!investor) {
     return next(new AppError(`There is no user with the email`, 404));
   }
 
   // 2 generate the random token
-  const resetToken = user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false });
+  const resetToken = investor.createPasswordResetToken();
+  await investor.save({ validateBeforeSave: false });
 
   // 3 send it to the users email
   // const resetURL = `${req.protocol}://${req.get(
@@ -140,7 +147,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   const hostLink =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000/auth/reset-password'
-      : process.env.SHAREHOLDER_PROD_RESET_PASSWORD_PATH;
+      : process.env.INVESTOR_PROD_RESET_PASSWORD_PATH;
 
   const resetURL = `${hostLink}/${resetToken}`;
 
@@ -148,7 +155,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
   try {
     await sendEmail({
-      email: user.email,
+      email: investor.email,
       subject: 'Your password reset token (valid for 10min)',
       message,
     });
@@ -172,9 +179,9 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
+    investor.passwordResetToken = undefined;
+    investor.passwordResetExpires = undefined;
+    await investor.save({ validateBeforeSave: false });
 
     return next(
       new AppError(
@@ -192,57 +199,55 @@ const resetPassword = catchAsync(async (req, res, next) => {
     .update(req.params.token)
     .digest('hex');
 
-  const shareholder = await Shareholder.findOne({
+  const investor = await Investor.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
 
   // 2 if the token has not expired and there is a user, set the password
-  if (!shareholder) {
+  if (!investor) {
     return next(new AppError('Token is invalid or has expired', 400));
   }
 
-  shareholder.password = req.body.password;
-  shareholder.passwordConfirm = req.body.passwordConfirm;
-  shareholder.passwordResetToken = undefined;
-  shareholder.passwordResetExpires = undefined;
-  await shareholder.save();
+  investor.password = req.body.password;
+  investor.passwordConfirm = req.body.passwordConfirm;
+  investor.passwordResetToken = undefined;
+  investor.passwordResetExpires = undefined;
+  await investor.save();
 
-  // 3 update changePasswordAt property for the shareholder
+  // 3 update changePasswordAt property for the Investor
   // This is updated on every save
 
-  // 4 login the shareholder in, send JWT
-  createSendToken(shareholder, 200, res);
+  // 4 login the Investor in, send JWT
+  createSendToken(investor, 200, res);
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
   const { passwordCurrent, newPassword, confirmNewPassword } = req.body;
 
   // 1 get the user from the collection
-  const shareholder = await Shareholder.findById(req.shareholder.id).select(
-    '+password',
-  );
+  const investor = await Investor.findById(req.investor.id).select('+password');
 
   // 2 check if the posted password is correct
   if (
-    !shareholder &&
-    !(await shareholder.correctPassword(passwordCurrent, shareholder.password))
+    !investor &&
+    !(await investor.correctPassword(passwordCurrent, investor.password))
   ) {
     return next(new AppError('Your current password is wrong', 401));
   }
 
   // 3 if the password is correct, update the password
-  shareholder.password = newPassword;
-  shareholder.passwordConfirm = confirmNewPassword;
-  await shareholder.save();
+  investor.password = newPassword;
+  investor.passwordConfirm = confirmNewPassword;
+  await investor.save();
 
-  // 4 login shareholder and send JWt
-  createSendToken(shareholder, 200, res);
+  // 4 login Investor and send JWt
+  createSendToken(investor, 200, res);
 });
 
 module.exports = {
-  createShareholder,
-  signInShareholder,
+  createInvestor,
+  signInInvestor,
   protect,
   forgotPassword,
   resetPassword,

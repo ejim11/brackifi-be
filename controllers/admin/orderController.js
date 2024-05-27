@@ -1,12 +1,11 @@
-const Orders = require('../models/ordersModel');
-
+const Orders = require('../../models/ordersModel');
 const {
   createOne,
   getAllDocs,
   getOne,
   updateOne,
   deleteOne,
-} = require('./handleFactory');
+} = require('../handleFactory');
 
 const setShareholderId = (req, res, next) => {
   if (!req.body.shareholder) req.body.shareholder = req.shareholder.id;

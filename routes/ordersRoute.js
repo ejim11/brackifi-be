@@ -6,8 +6,10 @@ const {
   getOrder,
   updateOrder,
   deleteOrder,
-} = require('../controllers/orderController');
-const { protect } = require('../controllers/shareholderAuthController');
+} = require('../controllers/admin/orderController');
+const {
+  protect,
+} = require('../controllers/shareholders/shareholderAuthController');
 
 const router = express.Router({ mergeParams: true });
 
