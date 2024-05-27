@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+// const cookieParser = require('cookie-parser');
 const subscribersRouter = require('./routes/subscribersRoute');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -51,6 +52,7 @@ app.use('/api', limiter);
 
 // body parser, reading data from body in req.body
 app.use(express.json({ limit: '10kb' }));
+// app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
@@ -75,6 +77,7 @@ app.use(
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  // console.log(req.cookies);
   next();
 });
 

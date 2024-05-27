@@ -135,7 +135,14 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   //   'host',
   // )}/api/v1/users/reserPassword/${resetToken}`;
 
-  const resetURL = `http://localhost:3000/auth/reset-password/${resetToken}`;
+  // const resetURL = `http://localhost:3000/auth/reset-password/${resetToken}`;
+
+  const hostLink =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/auth/reset-password'
+      : process.env.SHAREHOLDER_PROD_RESET_PASSWORD_PATH;
+
+  const resetURL = `${hostLink}/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
 
