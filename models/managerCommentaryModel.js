@@ -8,7 +8,7 @@ const managerCommentarySchema = new mongoose.Schema({
 });
 
 const ManagerCommentary = mongoose.model(
-  'managerCommentary',
+  'ManagerCommentary',
   managerCommentarySchema,
 );
 
