@@ -18,6 +18,7 @@ const shareValueRouter = require('./routes/shareValueRoute');
 const investorRouter = require('./routes/investorRoute');
 const ordersRouter = require('./routes/ordersRoute');
 const investmentsRouter = require('./routes/investmentRoute');
+const roiValueRouter = require('./routes/roiValueRoute');
 
 const app = express();
 // set security http headers
@@ -90,6 +91,7 @@ app.use('/api/v1/sharevalue', shareValueRouter);
 app.use('/api/v1/investors', investorRouter);
 app.use('/api/v1/orders', ordersRouter);
 app.use('/api/v1/investments', investmentsRouter);
+app.use('/api/v1/roivalue', roiValueRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} at the moment`, 404));
