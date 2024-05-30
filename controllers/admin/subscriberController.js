@@ -1,5 +1,5 @@
-const Subscriber = require('../models/subscriberModel');
-const { createOne, getAllDocs, deleteOne } = require('./handleFactory');
+const Subscriber = require('../../models/subscriberModel');
+const { createOne, getAllDocs, deleteOne } = require('../handleFactory');
 
 const addSubscriber = createOne(Subscriber);
 

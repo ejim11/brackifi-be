@@ -4,7 +4,7 @@ const {
   updateShareValue,
   getShareValue,
   updateShareValueHistory,
-} = require('../controllers/shareValueController');
+} = require('../controllers/admin/shareValueController');
 
 const router = express.Router();
 

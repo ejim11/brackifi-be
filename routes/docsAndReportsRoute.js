@@ -4,7 +4,7 @@ const {
   getAllReports,
   deleteReport,
   createDocAndReport,
-} = require('../controllers/documentsAndReportsController');
+} = require('../controllers/admin/documentsAndReportsController');
 
 const router = express.Router();
 

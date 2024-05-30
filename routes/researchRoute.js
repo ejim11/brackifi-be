@@ -3,7 +3,7 @@ const {
   createResearchPost,
   getAllResearchPosts,
   deleteResearchPost,
-} = require('../controllers/researchController');
+} = require('../controllers/admin/researchController');
 
 const router = express.Router();
 

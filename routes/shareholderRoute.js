@@ -6,7 +6,7 @@ const {
   updateMe,
   deleteMe,
   getShareholder,
-} = require('../controllers/shareholderController');
+} = require('../controllers/shareholders/shareholderController');
 const {
   createShareholder,
   signInShareholder,
@@ -14,7 +14,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
-} = require('../controllers/shareholderAuthController');
+} = require('../controllers/shareholders/shareholderAuthController');
 const ordersRouter = require('./ordersRoute');
 
 const router = express.Router();

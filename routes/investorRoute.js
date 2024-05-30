@@ -5,7 +5,9 @@ const {
   updateMe,
   deleteMe,
   getAllInvestors,
-} = require('../controllers/investorController');
+  getAnInvestor,
+  deleteAnInvestor,
+} = require('../controllers/investors/investorController');
 const {
   createInvestor,
   signInInvestor,
@@ -13,9 +15,12 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
-} = require('../controllers/investorAuthController');
+} = require('../controllers/investors/investorAuthController');
+const investmentRouter = require('./investmentRoute');
 
 const router = express.Router();
+
+router.use('/:investorId/investments', investmentRouter);
 
 router.route('/login').post(signInInvestor);
 
@@ -31,5 +36,7 @@ router
   .post(createPotentialInvestor);
 
 router.route('/').get(protect, getAllInvestors).post(createInvestor);
+
+router.route('/:id').get(getAnInvestor).delete(deleteAnInvestor);
 
 module.exports = router;
