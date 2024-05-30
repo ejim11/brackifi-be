@@ -70,6 +70,10 @@ const getAllDocs = (Model) =>
     if (req.params.shareholderId)
       filteredObj = { shareholder: req.params.shareholderId };
 
+    if (req.params.investorId) {
+      filteredObj = { investor: req.params.investorId };
+    }
+
     const features = new APIFeatures(Model.find(filteredObj), req.query)
       .sort()
       .limitFields()

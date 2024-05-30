@@ -2,7 +2,12 @@ const { PotentialInvestor } = require('../../models/PotentialInvestorsModel');
 const Investor = require('../../models/investorModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
-const { createOne, getAllDocs } = require('../handleFactory');
+const {
+  createOne,
+  getAllDocs,
+  getOne,
+  deleteOne,
+} = require('../handleFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -76,10 +81,19 @@ const getAllPotentialInvestors = getAllDocs(PotentialInvestor);
 
 const getAllInvestors = getAllDocs(Investor);
 
+const getAnInvestor = getOne(Investor, {
+  path: 'investments',
+  select: '-investor',
+});
+
+const deleteAnInvestor = deleteOne(Investor);
+
 module.exports = {
   getAllPotentialInvestors,
   createPotentialInvestor,
   getAllInvestors,
   updateMe,
   deleteMe,
+  getAnInvestor,
+  deleteAnInvestor,
 };
