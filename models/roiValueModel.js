@@ -18,7 +18,11 @@ const roiValueSchema = new mongoose.Schema(
   {
     value: {
       type: Number,
-      required: true,
+      required: [true, 'A value is required'],
+    },
+    performanceCommentary: {
+      type: String,
+      required: [true, 'A fund performance commentary is required'],
     },
     history: {
       type: [roiValueHistorySchema],
