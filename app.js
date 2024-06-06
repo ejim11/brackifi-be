@@ -19,7 +19,7 @@ const investorRouter = require('./routes/investorRoute');
 const ordersRouter = require('./routes/ordersRoute');
 const investmentsRouter = require('./routes/investmentRoute');
 const roiValueRouter = require('./routes/roiValueRoute');
-const managerCommentaryRouter = require('./routes/managerCommentaryRoute');
+const businessNewsRouter = require('./routes/businessNewsRoute');
 const fundPerfomanceCommentaryRouter = require('./routes/fundPerformanceCommentaryRoute');
 const investmentPositionRouter = require('./routes/investmentPositionRoute');
 
@@ -95,7 +95,7 @@ app.use('/api/v1/investors', investorRouter);
 app.use('/api/v1/orders', ordersRouter);
 app.use('/api/v1/investments', investmentsRouter);
 app.use('/api/v1/roivalue', roiValueRouter);
-app.use('/api/v1/managerCommentaries', managerCommentaryRouter);
+app.use('/api/v1/business-news', businessNewsRouter);
 app.use('/api/v1/fundPerformanceCommentaries', fundPerfomanceCommentaryRouter);
 app.use('/api/v1/investmentPositions', investmentPositionRouter);
 

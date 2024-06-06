@@ -64,7 +64,12 @@ const signInInvestor = catchAsync(async (req, res, next) => {
 
   // check if the user exists and password is correct
 
-  const investor = await Investor.findOne({ email }).select('+password');
+  const investor = await Investor.findOne({ email })
+    .select('+password')
+    .populate({
+      path: 'investments',
+      select: '-investor',
+    });
 
   if (
     !investor ||

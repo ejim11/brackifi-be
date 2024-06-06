@@ -49,6 +49,8 @@ const getRoiValue = catchAsync(async (req, res, next) => {
       roiValue: {
         _id: roiValue._id,
         value: roiValue.value,
+        performanceCommentary: roiValue.performanceCommentary,
+        previousDayReport: roiValue.previousDayReport,
         history: roiValue.history.slice(-12),
       },
     },

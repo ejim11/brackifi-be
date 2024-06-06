@@ -5,6 +5,7 @@ const {
   getRoiValue,
   updateRoiValueHistory,
 } = require('../controllers/admin/roiValueController');
+// const { protect } = require('../controllers/investors/investorAuthController');
 
 const router = express.Router();
 

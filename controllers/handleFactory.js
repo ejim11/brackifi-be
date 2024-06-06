@@ -67,16 +67,18 @@ const getAllDocs = (Model) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested get reviews on tour
     let filteredObj = {};
+    let fields = '';
     if (req.params.shareholderId)
       filteredObj = { shareholder: req.params.shareholderId };
 
     if (req.params.investorId) {
       filteredObj = { investor: req.params.investorId };
+      fields = '-investor';
     }
 
     const features = new APIFeatures(Model.find(filteredObj), req.query)
       .sort()
-      .limitFields()
+      .limitFields(fields)
       .paginate()
       .filter();
     // .sort()

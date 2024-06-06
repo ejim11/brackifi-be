@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const investmentSchema = new mongoose.Schema({
+  address: {
+    type: String,
+    required: [true, 'Please provide your wallet address'],
+  },
   amount: {
     type: Number,
     required: [true, 'Please provide an amount for investment'],
@@ -34,9 +38,19 @@ const investmentSchema = new mongoose.Schema({
     max: [100, 'Roi must be below or equal to 100'],
     set: (value) => Math.round(value * 10) / 10,
   },
-  isActive: {
-    type: Boolean,
-    default: false,
+  investmentState: {
+    type: String,
+    default: 'inactive',
+    enum: [
+      'inactive',
+      'active',
+      'up for withdrawal',
+      'withdraw pending',
+      'withdrawn',
+    ],
+  },
+  activeDate: {
+    type: Date,
   },
   payoutAvailable: {
     type: Number,
@@ -46,6 +60,11 @@ const investmentSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Investor',
   },
+});
+
+investmentSchema.pre(/^find/, async function (next) {
+  this.populate({ path: 'investor', select: 'name' });
+  next();
 });
 
 investmentSchema.pre(/^find/, async function (next) {

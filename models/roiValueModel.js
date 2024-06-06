@@ -12,6 +12,10 @@ const roiValueHistorySchema = new mongoose.Schema({
     required: [true, 'A month is required'],
     // set: (value) => new Date(value).toLocale(),
   },
+  report: {
+    type: String,
+    required: [true, 'A report is required'],
+  },
 });
 
 const roiValueSchema = new mongoose.Schema(
@@ -19,6 +23,18 @@ const roiValueSchema = new mongoose.Schema(
     value: {
       type: Number,
       required: [true, 'A value is required'],
+    },
+    previousDayReport: {
+      type: {
+        date: {
+          type: Date,
+          required: [true, 'A date is required'],
+        },
+        file: {
+          type: String,
+          required: [true, 'A file is required'],
+        },
+      },
     },
     performanceCommentary: {
       type: String,
