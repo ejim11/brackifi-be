@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const researchSchema = new mongoose.Schema({
+const featuredPostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, 'A research must have a title'],
@@ -14,10 +14,6 @@ const researchSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  author: {
-    type: String,
-    required: [true, 'A research must have a author'],
-  },
   image: {
     type: String,
     required: [true, 'A research must have a image'],
@@ -28,6 +24,6 @@ const researchSchema = new mongoose.Schema({
   },
 });
 
-const Research = mongoose.model('Research', researchSchema);
+const FeaturedPost = mongoose.model('FeaturedPost', featuredPostSchema);
 
-module.exports = Research;
+module.exports = FeaturedPost;
