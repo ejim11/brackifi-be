@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const multer = require('multer');
 const sharp = require('sharp');
-const Research = require('../../models/researchModel');
+const FeaturedPost = require('../../models/featuredPostModel');
 const { getAllDocs, deleteOne } = require('../handleFactory');
 const AppError = require('../../utils/appError');
 const catchAsync = require('../../utils/catchAsync');
@@ -20,9 +20,9 @@ const multerFilter = (req, file, cb) => {
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
-const uploadResearchPhoto = upload.single('image');
+const uploadFeaturedPostPhoto = upload.single('image');
 
-const resizeResearchPhoto = catchAsync(async (req, res, next) => {
+const resizeFeaturedPostPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) next();
 
   req.file.filename = `img-${Date.now()}.jpeg`;
@@ -31,17 +31,17 @@ const resizeResearchPhoto = catchAsync(async (req, res, next) => {
     .resize(2000, 1333)
     .toFormat('jpeg')
     .jpeg({ quality: 100 })
-    .toFile(`public/img/researches/${req.file.filename}`);
+    .toFile(`public/img/featured-posts/${req.file.filename}`);
 
   next();
 });
 
 // resources to handle
-// create a research post
-const createResearchPost = catchAsync(async (req, res, next) => {
+// create a featured post
+const createFeaturedPost = catchAsync(async (req, res, next) => {
   if (req.file)
-    req.body.image = `${process.env.NODE_ENV === 'development' ? process.env.LOCAL_HOST : process.env.WEB_HOST}/img/researches/${req.file.filename}`;
-  const doc = await Research.create(req.body);
+    req.body.image = `${process.env.NODE_ENV === 'development' ? process.env.LOCAL_HOST : process.env.WEB_HOST}/img/featured-posts/${req.file.filename}`;
+  const doc = await FeaturedPost.create(req.body);
 
   res.status(201).json({
     status: 'success',
@@ -52,15 +52,15 @@ const createResearchPost = catchAsync(async (req, res, next) => {
 });
 
 // get all research posts
-const getAllResearchPosts = getAllDocs(Research);
+const getAllFeaturedPosts = getAllDocs(FeaturedPost);
 
 // delete a research post
-const deleteResearchPost = deleteOne(Research);
+const deleteFeaturedPost = deleteOne(FeaturedPost);
 
 module.exports = {
-  createResearchPost,
-  getAllResearchPosts,
-  deleteResearchPost,
-  uploadResearchPhoto,
-  resizeResearchPhoto,
+  createFeaturedPost,
+  getAllFeaturedPosts,
+  deleteFeaturedPost,
+  uploadFeaturedPostPhoto,
+  resizeFeaturedPostPhoto,
 };

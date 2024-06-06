@@ -23,6 +23,7 @@ const roiValueRouter = require('./routes/roiValueRoute');
 const businessNewsRouter = require('./routes/businessNewsRoute');
 const fundPerfomanceCommentaryRouter = require('./routes/fundPerformanceCommentaryRoute');
 const investmentPositionRouter = require('./routes/investmentPositionRoute');
+const featuredPostRouter = require('./routes/featuredPostRoute');
 
 const app = express();
 // set security http headers
@@ -101,6 +102,7 @@ app.use('/api/v1/roivalue', roiValueRouter);
 app.use('/api/v1/business-news', businessNewsRouter);
 app.use('/api/v1/fundPerformanceCommentaries', fundPerfomanceCommentaryRouter);
 app.use('/api/v1/investmentPositions', investmentPositionRouter);
+app.use('/api/v1/featured-posts', featuredPostRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} at the moment`, 404));
