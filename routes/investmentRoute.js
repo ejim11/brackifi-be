@@ -5,6 +5,7 @@ const {
   getAllInvestments,
   getInvestment,
   deleteInvestment,
+  makeWithdrawalRequest,
 } = require('../controllers/investors/investmentController');
 const { protect } = require('../controllers/investors/investorAuthController');
 
@@ -15,6 +16,14 @@ router
   .get(protect, getAllInvestments)
   .post(protect, setInvestorId, createInvestment);
 
-router.route('/:id').get(getInvestment).delete(deleteInvestment);
+router
+  .route('/:id')
+  .get(getInvestment)
+  .delete(deleteInvestment)
+  .patch(makeWithdrawalRequest);
+
+router
+  .route('/:investmentId/make-withdrawal')
+  .patch(protect, makeWithdrawalRequest);
 
 module.exports = router;
