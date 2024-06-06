@@ -1,30 +1,127 @@
+/* eslint-disable node/no-extraneous-require */
 /* eslint-disable import/no-extraneous-dependencies */
 const nodemailer = require('nodemailer');
+const pug = require('pug');
+const { convert } = require('html-to-text');
 
-const sendEmail = async (options) => {
-  // 1 Create a transporter(a service that will send the email)
-  const transporter = nodemailer.createTransport({
-    // service: 'Gmail',
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-    // for gmail, you need to activate the less secure app option
-  });
+// console.log(htmlToText.toString());
 
-  // 2 Define the email options
-  const mailOptions = {
-    from: 'Ejim Favour <favourejim56@gmail.com>',
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-    // html:
-  };
-
-  // 3 Send the email
-  await transporter.sendMail(mailOptions);
+const options = {
+  wordwrap: 130,
+  // ...
 };
 
-module.exports = sendEmail;
+class Email {
+  constructor(user, url) {
+    this.to = user.email;
+    // this.firstName = user.name.split(' ')[0];
+    this.url = url;
+    this.from = `Yoosha Shehu <${process.env.EMAIL_FROM}>`;
+  }
+
+  // create a transport for the email
+  newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      return 1;
+    }
+    return nodemailer.createTransport({
+      // service: 'Gmail',
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      // for gmail, you need to activate the less secure app option
+    });
+  }
+
+  // send the actual email
+  async send(template, subject) {
+    // render html based on the pug template
+    const html = pug.renderFile(
+      `${__dirname}/../views/emails/${template}.pug`,
+      { url: this.url, subject },
+    );
+
+    // mail options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: convert(html, options),
+    };
+
+    // create transport and send
+    await this.newTransport().sendMail(mailOptions);
+  }
+
+  // send a welcome message
+  async sendSubscribed() {
+    await this.send('subscribe', 'Welcome to Brackifi');
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset token, valid for 10mins',
+    );
+  }
+}
+
+// const sendEmail = async (options) => {
+// 1 Create a transporter(a service that will send the email)
+// const transporter = nodemailer.createTransport({
+//   // service: 'Gmail',
+//   host: process.env.EMAIL_HOST,
+//   port: process.env.EMAIL_PORT,
+//   auth: {
+//     user: process.env.EMAIL_USERNAME,
+//     pass: process.env.EMAIL_PASSWORD,
+//   },
+//   // for gmail, you need to activate the less secure app option
+// });
+
+// 2 Define the email options
+// const mailOptions = {
+//   from: 'Ejim Favour <favourejim56@gmail.com>',
+//   to: options.email,
+//   subject: options.subject,
+//   text: options.message,
+//   // html:
+// };
+
+// // 3 Send the email
+// await transporter.sendMail(mailOptions);
+// };
+
+module.exports = Email;
+
+// const sendEmail = async (options) => {
+//   // 1 Create a transporter(a service that will send the email)
+//   const transporter = nodemailer.createTransport({
+//     // service: 'Gmail',
+//     host: process.env.EMAIL_HOST,
+//     port: process.env.EMAIL_PORT,
+//     auth: {
+//       user: process.env.EMAIL_USERNAME,
+//       pass: process.env.EMAIL_PASSWORD,
+//     },
+//     // for gmail, you need to activate the less secure app option
+//   });
+
+//   // 2 Define the email options
+//   const mailOptions = {
+//     from: 'Ejim Favour <favourejim56@gmail.com>',
+//     to: options.email,
+//     subject: options.subject,
+//     text: options.message,
+//     // html:
+//   };
+
+//   // 3 Send the email
+//   await transporter.sendMail(mailOptions);
+// };
+
+// module.exports = sendEmail;

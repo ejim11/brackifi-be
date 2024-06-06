@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    meta(name='viewport', content='width=device-width')
+    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+    title= subject
+    //- link(rel='stylesheet', href='styles.css')
+
+    
+    include _style
+
+  body
+    .header
+      img(src="https://i.ibb.co/W0NS5gg/logo2.png" alt="logo").logo-img
+      p.logo Brackifi
+    .main 
+      block content
+    .footer
+      p.footer-link Don't like these emails? 
+      a(href='#') Unsubscribe 
