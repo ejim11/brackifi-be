@@ -21,9 +21,6 @@ class Email {
 
   // create a transport for the email
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      return 1;
-    }
     return nodemailer.createTransport({
       // service: 'Gmail',
       host: process.env.EMAIL_HOST,

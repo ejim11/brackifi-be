@@ -27,7 +27,7 @@ const featuredPostRouter = require('./routes/featuredPostRoute');
 
 const app = express();
 
-app.set('trust proxy', true);
+app.set('trust proxy', 150);
 app.get('/x-forwarded-for', (request, response) =>
   response.send(request.headers['x-forwarded-for']),
 );
