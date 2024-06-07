@@ -1,3 +1,4 @@
+/* eslint-disable node/no-extraneous-require */
 /* eslint-disable import/no-extraneous-dependencies */
 const multer = require('multer');
 const sharp = require('sharp');
