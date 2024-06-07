@@ -1,0 +1,14 @@
+.ejim {
+  text-decoration: none;
+  width: fit-content;
+}
+
+*::after {
+  box-sizing: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}

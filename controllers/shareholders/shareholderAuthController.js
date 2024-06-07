@@ -8,7 +8,7 @@ const sharp = require('sharp');
 const Shareholder = require('../../models/shareholderModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
-const sendEmail = require('../../utils/email');
+// const sendEmail = require('../../utils/email');
 const Email = require('../../utils/email');
 
 const signToken = (id) =>
@@ -206,27 +206,28 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetURL = `${hostLink}/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
+  // const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10min)',
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10min)',
+    //   message,
+    // });
 
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-      ),
-      // this ensures xss attacks can not access the cookie
-      httpOnly: true,
-    };
+    new Email(user, resetURL).sendPasswordReset();
+    // const cookieOptions = {
+    //   expires: new Date(
+    //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    //   ),
+    //   // this ensures xss attacks can not access the cookie
+    //   httpOnly: true,
+    // };
 
-    // secure as true means it has to https
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // // secure as true means it has to https
+    // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-    res.cookie('resetToken', resetToken, cookieOptions);
+    // res.cookie('resetToken', resetToken, cookieOptions);
 
     res.status(200).json({
       status: 'success',

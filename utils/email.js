@@ -16,7 +16,7 @@ class Email {
     this.to = user.email;
     this.firstName = user.name ? user.name.split(' ')[0] : '';
     this.url = url;
-    this.from = `Yoosha Shehu <${process.env.EMAIL_FROM}>`;
+    this.from = `Brackifi <${process.env.EMAIL_FROM}>`;
   }
 
   // create a transport for the email

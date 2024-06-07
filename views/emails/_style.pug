@@ -1,7 +1,15 @@
 style.
+    *,*::before,*::after{
+        box-sizing: inherit;
+        padding: 0;
+        margin: 0;
+    }
+    html{
+        box-sizing: border-box;
+    }
     .header{
         background: rgba(67, 104, 80);
-        padding: 15px;
+        padding: 3px 10px;
         color: #EEF0E5;
         display: flex;
         align-items: center !important;
@@ -10,23 +18,23 @@ style.
         color : #555335;
     }
     .logo{
-        font-size: 35px;
+        font-size: 30px;
         font-family: san-serif;
         font-weight: bold;
         color : rgba(210, 183, 116, 1);
     }
     .logo-img{
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
         margin-right: 10px;
         display: block;
         margin-top: auto ;
         margin-bottom: auto;
     }
     .main{
-        padding: 20px;
-        background-color : #EEF0E5;
-        color : #555335;
+        padding: 20px ;
+        background-color: #EEF0E5;
+        color: #555335;
         font-size: 17px;
     }
     .footer{
@@ -46,4 +54,13 @@ style.
         color: rgba(210, 183, 116, 1);
         display: block;
         margin: auto 0;
+    }
+    .reset{
+        padding: 10px 15px;
+        background-color: rgba(67, 104, 80);
+        color: #EEF0E5 !important;
+        display: block;
+        border-radius: 10px;
+        text-decoration: none;
+        width: fit-content;
     }
