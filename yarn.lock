@@ -111,7 +111,7 @@
   resolved "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-x64/-/sharp-libvips-linuxmusl-x64-1.0.2.tgz"
   integrity sha512-VI94Q6khIHqHWNOh6LLdm9s2Ry4zdjWJwH56WoiJU7NTeDwyApdZZ8c+SADC8OH98KWNQXnE01UdJ9CSfZvwZw==
 
-"@img/sharp-linux-x64@0.33.4":
+"@img/sharp-linux-x64@^0.33.0", "@img/sharp-linux-x64@0.33.4":
   version "0.33.4"
   resolved "https://registry.npmjs.org/@img/sharp-linux-x64/-/sharp-linux-x64-0.33.4.tgz"
   integrity sha512-GoR++s0XW9DGVi8SUGQ/U4AeIzLdNjHka6jidVwapQ/JebGVQIpi52OdyxCNVRE++n1FCLzjDovJNozif7w/Aw==
@@ -125,7 +125,7 @@
   optionalDependencies:
     "@img/sharp-libvips-linuxmusl-x64" "1.0.2"
 
-"@img/sharp-win32-x64@^0.33.4", "@img/sharp-win32-x64@0.33.4":
+"@img/sharp-win32-x64@0.33.4":
   version "0.33.4"
   resolved "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.33.4.tgz"
   integrity sha512-3QLocdTRVIrFNye5YocZl+KKpYKP+fksi1QhmOArgx7GyhIbQp/WrJRu176jm8IxromS7RIkzMiMINVdBtC8Aw==
