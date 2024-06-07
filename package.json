@@ -10,7 +10,7 @@
     "start:prod": "NODE_ENV=production nodemon server.js"
   },
   "dependencies": {
-    "@img/sharp-win32-x64": "^0.33.4",
+
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -31,6 +31,9 @@
     "sharp": "^0.33.4",
     "validator": "^13.11.0",
     "xss-clean": "^0.1.4"
+  },
+  "optionalDependencies": {
+    "@img/sharp-linux-x64": "^0.33.0"    
   },
   "devDependencies": {
     "eslint": "^8.57.0",
