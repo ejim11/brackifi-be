@@ -63,7 +63,6 @@ const uploadAuthImages = upload.fields([
 ]);
 
 const resizeAuthImages = catchAsync(async (req, res, next) => {
-  console.log(req);
   if (!req.files.proofOfAddress || !req.files.proofOfAddress) {
     return next(new AppError(' please provide auth images', 400));
   }
