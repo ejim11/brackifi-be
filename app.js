@@ -26,6 +26,12 @@ const investmentPositionRouter = require('./routes/investmentPositionRoute');
 const featuredPostRouter = require('./routes/featuredPostRoute');
 
 const app = express();
+
+app.set('trust proxy', true);
+app.get('/x-forwarded-for', (request, response) =>
+  response.send(request.headers['x-forwarded-for']),
+);
+
 // set security http headers
 app.use(helmet());
 app.use(cors());
