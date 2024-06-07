@@ -14,7 +14,7 @@ const options = {
 class Email {
   constructor(user, url) {
     this.to = user.email;
-    // this.firstName = user.name.split(' ')[0];
+    this.firstName = user.name ? user.name.split(' ')[0] : '';
     this.url = url;
     this.from = `Yoosha Shehu <${process.env.EMAIL_FROM}>`;
   }
@@ -41,7 +41,7 @@ class Email {
     // render html based on the pug template
     const html = pug.renderFile(
       `${__dirname}/../views/emails/${template}.pug`,
-      { url: this.url, subject },
+      { firstName: this.firstName, url: this.url, subject },
     );
 
     // mail options
@@ -60,6 +60,10 @@ class Email {
   // send a welcome message
   async sendSubscribed() {
     await this.send('subscribe', 'Welcome to Brackifi');
+  }
+
+  async sendWelcomeShareholder() {
+    await this.send('welcomeShareholder', 'Welcome to Brackifi');
   }
 
   async sendPasswordReset() {

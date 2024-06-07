@@ -34,6 +34,10 @@ const shareholderSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide an address'],
     },
+    isLoginActivated: {
+      type: Boolean,
+      default: false,
+    },
     email: {
       type: String,
       unique: true,

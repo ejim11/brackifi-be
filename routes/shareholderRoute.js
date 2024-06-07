@@ -14,6 +14,8 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
+  uploadAuthImages,
+  resizeAuthImages,
 } = require('../controllers/shareholders/shareholderAuthController');
 const ordersRouter = require('./ordersRoute');
 
@@ -34,7 +36,10 @@ router
   .get(protect, getAllPotentialShareHolders)
   .post(createPotentialShareholder);
 
-router.route('/').get(protect, getAllShareholders).post(createShareholder);
+router
+  .route('/')
+  .get(protect, getAllShareholders)
+  .post(uploadAuthImages, resizeAuthImages, createShareholder);
 
 router.route('/:id').get(getShareholder);
 

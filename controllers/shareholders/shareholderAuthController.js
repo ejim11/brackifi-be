@@ -2,10 +2,13 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
+const multer = require('multer');
+const sharp = require('sharp');
 const Shareholder = require('../../models/shareholderModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
 const sendEmail = require('../../utils/email');
+const Email = require('../../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -39,8 +42,67 @@ const createSendToken = (shareholder, statusCode, res) => {
   });
 };
 
+// keeping the image in memory so we can use it again
+const multerStorage = multer.memoryStorage();
+
+// function for filtering what kind of files it should store
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image, please upload only images', 400), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+const uploadAuthImages = upload.fields([
+  { name: 'proofOfIdentity', maxCount: 1 },
+  { name: 'proofOfAddress', maxCount: 1 },
+]);
+
+const resizeAuthImages = catchAsync(async (req, res, next) => {
+  console.log(req);
+  if (!req.files.proofOfAddress || !req.files.proofOfAddress) {
+    return next(new AppError(' please provide auth images', 400));
+  }
+
+  req.body.proofOfIdentity = `img-identity-${Date.now()}.jpeg`;
+  req.body.proofOfAddress = `img-address-${Date.now()}.jpeg`;
+
+  await sharp(req.files.proofOfIdentity[0].buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/auth/${req.body.proofOfIdentity}`);
+
+  await sharp(req.files.proofOfAddress[0].buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/auth/${req.body.proofOfAddress}`);
+
+  next();
+});
+
 const createShareholder = catchAsync(async (req, res, next) => {
-  const newShareholder = await Shareholder.create(req.body);
+  const newShareholder = await Shareholder.create({
+    name: req.body.name,
+    email: req.body.email,
+    address: req.body.address,
+    phoneNumber: req.body.phoneNumber,
+    proofOfIdentity: req.body.proofOfIdentity,
+    proofOfAddress: req.body.proofOfAddress,
+    nextOfKin: {
+      name: req.body.nextOfKinName,
+      email: req.body.nextOfKinEmail,
+      address: req.body.nextOfKinAddress,
+    },
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
+
+  new Email(newShareholder, '').sendWelcomeShareholder();
 
   createSendToken(newShareholder, 201, res);
 });
@@ -246,4 +308,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updatePassword,
+  uploadAuthImages,
+  resizeAuthImages,
 };
