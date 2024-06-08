@@ -19,18 +19,18 @@ const signToken = (id) =>
 const createSendToken = (shareholder, statusCode, res) => {
   const token = signToken(shareholder._id);
 
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ),
-    // this ensures xss attacks can not access the cookie
-    httpOnly: true,
-  };
+  // const cookieOptions = {
+  //   expires: new Date(
+  //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+  //   ),
+  //   // this ensures xss attacks can not access the cookie
+  //   httpOnly: true,
+  // };
 
-  // secure as true means it has to be https
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  // // secure as true means it has to be https
+  // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookieOptions);
+  // res.cookie('jwt', token, cookieOptions);
 
   shareholder.password = undefined;
 
@@ -126,6 +126,10 @@ const signInShareholder = catchAsync(async (req, res, next) => {
     !(await shareholder.correctPassword(password, shareholder.password))
   ) {
     return next(new AppError('Incorrect email or password', 401));
+  }
+
+  if (!shareholder.isLoginActivated) {
+    return next(new AppError('Please wait till your is activated', 401));
   }
 
   // if everything is ok, send the token to the client

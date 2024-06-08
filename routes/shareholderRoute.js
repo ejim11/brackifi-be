@@ -21,6 +21,7 @@ const {
   resizeAuthImages,
 } = require('../controllers/shareholders/shareholderAuthController');
 const ordersRouter = require('./ordersRoute');
+const { activateUser } = require('../controllers/admin/adminController');
 
 const router = express.Router();
 
@@ -49,5 +50,7 @@ router
   .post(uploadAuthImages, resizeAuthImages, createShareholder);
 
 router.route('/:id').get(getShareholder);
+
+router.route('/activate-shareholder').patch(activateUser);
 
 module.exports = router;

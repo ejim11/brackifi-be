@@ -2,6 +2,8 @@ const catchAsync = require('../../utils/catchAsync');
 const Shareholder = require('../../models/shareholderModel');
 const Orders = require('../../models/ordersModel');
 const AppError = require('../../utils/appError');
+const { activateOne } = require('../handleFactory');
+const ShareValue = require('../../models/shareValueModel');
 
 const validateOrder = catchAsync(async (req, res, next) => {
   // changing the order to verified
@@ -17,14 +19,21 @@ const validateOrder = catchAsync(async (req, res, next) => {
   //   find
   const shareholder = await Shareholder.findById(order.shareholder.id);
 
-  if (order.orderType === 'sell' && order.amount > shareholder.shareholding) {
+  const shareValue = await ShareValue.findById(req.body.shareValueId);
+
+  const val =
+    order.orderType === 'buy'
+      ? Math.round(order.amount / shareValue.value)
+      : order.amount;
+
+  if (order.orderType === 'sell' && val > shareholder.shareholding) {
     return next(new AppError('Amount is greater than shareholding', 400));
   }
 
   const holding =
     order.orderType === 'buy'
-      ? shareholder.shareholding + order.amount
-      : shareholder.shareholding - order.amount;
+      ? shareholder.shareholding + val
+      : shareholder.shareholding - val;
 
   const updateBody = {
     shareholding: holding,
@@ -41,6 +50,9 @@ const validateOrder = catchAsync(async (req, res, next) => {
   });
 });
 
+const activateUser = activateOne(Shareholder);
+
 module.exports = {
   validateOrder,
+  activateUser,
 };
