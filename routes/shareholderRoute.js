@@ -6,6 +6,9 @@ const {
   updateMe,
   deleteMe,
   getShareholder,
+  uploadProfilePhoto,
+  resizeProfilePhoto,
+  updateProfileImage,
 } = require('../controllers/shareholders/shareholderController');
 const {
   createShareholder,
@@ -30,6 +33,10 @@ router.patch('/resetPassword/:token', resetPassword);
 router.patch('/updateMyPassword', protect, updatePassword);
 router.patch('/updateMe', protect, updateMe);
 router.delete('/deleteMe', protect, deleteMe);
+
+router
+  .route('/update-profile-img')
+  .patch(protect, uploadProfilePhoto, resizeProfilePhoto, updateProfileImage);
 
 router
   .route('/potential-shareholders')

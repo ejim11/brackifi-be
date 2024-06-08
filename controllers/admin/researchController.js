@@ -40,7 +40,7 @@ const resizeResearchPhoto = catchAsync(async (req, res, next) => {
 // resources to handle
 // create a research post
 const createResearchPost = catchAsync(async (req, res, next) => {
-  if (req.file) req.body.image = `/img/researches/${req.file.filename}`;
+  if (req.file) req.body.image = `img/researches/${req.file.filename}`;
   const doc = await Research.create(req.body);
 
   res.status(201).json({
