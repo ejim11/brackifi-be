@@ -27,7 +27,7 @@ const featuredPostRouter = require('./routes/featuredPostRoute');
 
 const app = express();
 
-app.set('trust proxy', 150);
+app.set('trust proxy', 300);
 app.get('/x-forwarded-for', (request, response) =>
   response.send(request.headers['x-forwarded-for']),
 );
@@ -61,7 +61,7 @@ app.use(mongoSanitize());
 
 // limit requests from api
 const limiter = rateLimit({
-  max: 150,
+  max: 300,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour.',
 });
