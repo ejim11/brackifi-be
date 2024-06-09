@@ -2,10 +2,12 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
+const multer = require('multer');
+const sharp = require('sharp');
 const Investor = require('../../models/investorModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
-const sendEmail = require('../../utils/email');
+const Email = require('../../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -15,18 +17,18 @@ const signToken = (id) =>
 const createSendToken = (investor, statusCode, res) => {
   const token = signToken(investor._id);
 
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ),
-    // this ensures xss attacks can not access the cookie
-    httpOnly: true,
-  };
+  // const cookieOptions = {
+  //   expires: new Date(
+  //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+  //   ),
+  //   // this ensures xss attacks can not access the cookie
+  //   httpOnly: true,
+  // };
 
-  // secure as true means it has to be https
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  // // secure as true means it has to be https
+  // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookieOptions);
+  // res.cookie('jwt', token, cookieOptions);
 
   investor.password = undefined;
 
@@ -39,6 +41,48 @@ const createSendToken = (investor, statusCode, res) => {
   });
 };
 
+// keeping the image in memory so we can use it again
+const multerStorage = multer.memoryStorage();
+
+// function for filtering what kind of files it should store
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image, please upload only images', 400), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+const uploadAuthImages = upload.fields([
+  { name: 'proofOfIdentity', maxCount: 1 },
+  { name: 'proofOfAddress', maxCount: 1 },
+]);
+
+const resizeAuthImages = catchAsync(async (req, res, next) => {
+  if (!req.files.proofOfAddress || !req.files.proofOfAddress) {
+    return next(new AppError(' please provide auth images', 400));
+  }
+
+  req.body.proofOfIdentity = `img-identity-${Date.now()}.jpeg`;
+  req.body.proofOfAddress = `img-address-${Date.now()}.jpeg`;
+
+  await sharp(req.files.proofOfIdentity[0].buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/auth/investors/${req.body.proofOfIdentity}`);
+
+  await sharp(req.files.proofOfAddress[0].buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/auth/investors/${req.body.proofOfAddress}`);
+
+  next();
+});
+
 const createInvestor = catchAsync(async (req, res, next) => {
   const newInvestor = await Investor.create({
     name: req.body.name,
@@ -50,6 +94,8 @@ const createInvestor = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
+
+  new Email(newInvestor, '').sendWelcomeInvestor();
 
   createSendToken(newInvestor, 201, res);
 });
@@ -76,6 +122,10 @@ const signInInvestor = catchAsync(async (req, res, next) => {
     !(await investor.correctPassword(password, investor.password))
   ) {
     return next(new AppError('Incorrect email or password', 401));
+  }
+
+  if (!investor.isLoginActivated) {
+    return next(new AppError('Please wait till your is activated', 401));
   }
 
   // if everything is ok, send the token to the client
@@ -156,27 +206,29 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetURL = `${hostLink}/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
+  // const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email.`;
 
   try {
-    await sendEmail({
-      email: investor.email,
-      subject: 'Your password reset token (valid for 10min)',
-      message,
-    });
+    // await sendEmail({
+    //   email: investor.email,
+    //   subject: 'Your password reset token (valid for 10min)',
+    //   message,
+    // });
 
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-      ),
-      // this ensures xss attacks can not access the cookie
-      httpOnly: true,
-    };
+    new Email(investor, resetURL).sendPasswordReset();
 
-    // secure as true means it has to https
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // const cookieOptions = {
+    //   expires: new Date(
+    //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    //   ),
+    //   // this ensures xss attacks can not access the cookie
+    //   httpOnly: true,
+    // };
 
-    res.cookie('resetToken', resetToken, cookieOptions);
+    // // secure as true means it has to https
+    // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    // res.cookie('resetToken', resetToken, cookieOptions);
 
     res.status(200).json({
       status: 'success',
@@ -257,4 +309,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updatePassword,
+  uploadAuthImages,
+  resizeAuthImages,
 };

@@ -4,6 +4,7 @@ const Orders = require('../../models/ordersModel');
 const AppError = require('../../utils/appError');
 const { activateOne } = require('../handleFactory');
 const ShareValue = require('../../models/shareValueModel');
+const Investor = require('../../models/investorModel');
 
 const validateOrder = catchAsync(async (req, res, next) => {
   // changing the order to verified
@@ -52,7 +53,10 @@ const validateOrder = catchAsync(async (req, res, next) => {
 
 const activateUser = activateOne(Shareholder);
 
+const activateInvestor = activateOne(Investor);
+
 module.exports = {
   validateOrder,
   activateUser,
+  activateInvestor,
 };
