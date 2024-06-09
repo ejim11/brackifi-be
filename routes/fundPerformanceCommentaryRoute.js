@@ -4,6 +4,8 @@ const {
   getAllFundPerformanceCommentaries,
   deleteFundPerformanceCommentary,
   createFundPerformanceCommentary,
+  uploadFundCommentaryDocFiles,
+  resizeFundCommentaryImage,
 } = require('../controllers/admin/fundPerfomanceCommentaryController');
 
 const router = express.Router();
@@ -11,7 +13,11 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllFundPerformanceCommentaries)
-  .post(createFundPerformanceCommentary);
+  .post(
+    uploadFundCommentaryDocFiles,
+    resizeFundCommentaryImage,
+    createFundPerformanceCommentary,
+  );
 
 router
   .route('/:id')
