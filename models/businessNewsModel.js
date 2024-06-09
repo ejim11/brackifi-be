@@ -1,10 +1,31 @@
 const mongoose = require('mongoose');
 
 const businessNewsSchema = new mongoose.Schema({
-  title: { type: String, required: [true, 'Please provide a title.'] },
-  summary: { type: String, required: [true, 'Please provide a summary'] },
-  date: { type: Date, required: [true, 'Please provide a date'] },
-  image: { type: String, required: [true, 'Please provide an image'] },
+  title: {
+    type: String,
+    required: [true, 'A research must have a title'],
+    unique: true,
+  },
+  summary: {
+    type: String,
+    required: [true, 'A research must have a summary'],
+  },
+  datePosted: {
+    type: Date,
+    default: Date.now(),
+  },
+  author: {
+    type: String,
+    required: [true, 'A research must have a author'],
+  },
+  image: {
+    type: String,
+    required: [true, 'A research must have a image'],
+  },
+  link: {
+    type: String,
+    required: [true, 'A research must have a link'],
+  },
 });
 
 const BusinessNews = mongoose.model('BusinessNews', businessNewsSchema);
