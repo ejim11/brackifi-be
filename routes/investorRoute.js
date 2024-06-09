@@ -45,7 +45,7 @@ router
   .get(protect, getAllInvestors)
   .post(uploadAuthImages, resizeAuthImages, createInvestor);
 
-router.route('/:id').get(getAnInvestor).delete(deleteAnInvestor);
+router.route('/:id').get(protect, getAnInvestor).delete(deleteAnInvestor);
 
 router.route('/activate-investor').patch(activateInvestor);
 
