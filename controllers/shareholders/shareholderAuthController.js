@@ -74,13 +74,13 @@ const resizeAuthImages = catchAsync(async (req, res, next) => {
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/auth/${req.body.proofOfIdentity}`);
+    .toFile(`public/img/auth/shareholders/${req.body.proofOfIdentity}`);
 
   await sharp(req.files.proofOfAddress[0].buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/auth/${req.body.proofOfAddress}`);
+    .toFile(`public/img/auth/shareholders/${req.body.proofOfAddress}`);
 
   next();
 });

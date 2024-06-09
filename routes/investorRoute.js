@@ -17,6 +17,11 @@ const {
   updatePassword,
 } = require('../controllers/investors/investorAuthController');
 const investmentRouter = require('./investmentRoute');
+const {
+  uploadAuthImages,
+  resizeAuthImages,
+} = require('../controllers/shareholders/shareholderAuthController');
+const { activateInvestor } = require('../controllers/admin/adminController');
 
 const router = express.Router();
 
@@ -35,8 +40,13 @@ router
   .get(protect, getAllPotentialInvestors)
   .post(createPotentialInvestor);
 
-router.route('/').get(protect, getAllInvestors).post(createInvestor);
+router
+  .route('/')
+  .get(protect, getAllInvestors)
+  .post(uploadAuthImages, resizeAuthImages, createInvestor);
 
 router.route('/:id').get(getAnInvestor).delete(deleteAnInvestor);
+
+router.route('/activate-investor').patch(activateInvestor);
 
 module.exports = router;

@@ -63,6 +63,10 @@ class Email {
     await this.send('welcomeShareholder', 'Welcome to Brackifi');
   }
 
+  async sendWelcomeInvestor() {
+    await this.send('welcomeInvestor', 'Welcome to Brackifi');
+  }
+
   async sendPasswordReset() {
     await this.send(
       'passwordReset',

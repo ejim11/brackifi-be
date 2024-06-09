@@ -14,6 +14,10 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide an address'],
     },
+    isLoginActivated: {
+      type: Boolean,
+      default: false,
+    },
     email: {
       type: String,
       unique: true,
@@ -57,6 +61,7 @@ const investorSchema = new mongoose.Schema(
         message: 'Passwords do not match',
       },
     },
+    createdAt: { type: Date, default: Date.now() },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -71,19 +76,19 @@ const investorSchema = new mongoose.Schema(
       default: 'investor',
       enum: ['investor'],
     },
-    maximumDrawdown: {
-      type: Number,
-      required: [true, 'maximum drawdown is required'],
-      min: [0, 'Roi must be above or equal to 1'],
-      max: [100, 'Roi must be below or equal to 100'],
-      set: (value) => Math.round(value * 10) / 10,
-    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },
 );
+
+// virtual populate
+investorSchema.virtual('investments', {
+  ref: 'Investment',
+  foreignField: 'investor',
+  localField: '_id',
+});
 
 investorSchema.pre(/^find/, function (next) {
   // (this) points to the current query
@@ -127,13 +132,6 @@ investorSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   // false means password not changed.
   return false;
 };
-
-// virtual populate
-investorSchema.virtual('investments', {
-  ref: 'Investment',
-  foreignField: 'investor',
-  localField: '_id',
-});
 
 investorSchema.methods.createPasswordResetToken = function () {
   // creating the reset token
