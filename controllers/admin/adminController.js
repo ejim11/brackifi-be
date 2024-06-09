@@ -5,6 +5,7 @@ const AppError = require('../../utils/appError');
 const { activateOne } = require('../handleFactory');
 const ShareValue = require('../../models/shareValueModel');
 const Investor = require('../../models/investorModel');
+const Investment = require('../../models/investmentModel');
 
 const validateOrder = catchAsync(async (req, res, next) => {
   // changing the order to verified
@@ -55,8 +56,29 @@ const activateUser = activateOne(Shareholder);
 
 const activateInvestor = activateOne(Investor);
 
+const activateInvestment = catchAsync(async (req, res, next) => {
+  // get investment by id
+  // // update the investmentState and activeDate
+  const updatedInvestment = await Investment.findByIdAndUpdate(
+    req.body.investmentId,
+    { investmentState: 'active', activeDate: Date.now() },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      updatedInvestment,
+    },
+  });
+});
+
 module.exports = {
   validateOrder,
   activateUser,
   activateInvestor,
+  activateInvestment,
 };
