@@ -1,6 +1,12 @@
+/* eslint-disable no-nested-ternary */
+const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const { APIFeatures } = require('../utils/apiFeatures');
+const Admin = require('../models/adminModel');
+const Investor = require('../models/investorModel');
+const Shareholder = require('../models/shareholderModel');
 
 const deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -84,7 +90,7 @@ const getOne = (Model, popOptions) =>
     });
   });
 
-const getAllDocs = (Model) =>
+const getAllDocs = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested get reviews on tour
     let filteredObj = {};
@@ -97,7 +103,13 @@ const getAllDocs = (Model) =>
       fields = '-investor';
     }
 
-    const features = new APIFeatures(Model.find(filteredObj), req.query)
+    let query = Model.find(filteredObj);
+
+    if (popOptions) {
+      query = Model.find(filteredObj).populate(popOptions);
+    }
+
+    const features = new APIFeatures(query, req.query)
       .sort()
       .limitFields(fields)
       .paginate()
@@ -122,6 +134,73 @@ const getAllDocs = (Model) =>
     });
   });
 
+const protectAll = catchAsync(async (req, res, next) => {
+  // 1) get the token and check if it exists
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.slice().split(' ')[1];
+    console.log(token);
+  }
+
+  // 401- unauthorized
+  if (!token) {
+    return next(
+      new AppError(`You are not logged in! Please login to get access.`, 401),
+    );
+  }
+  // 2) validate (verify) the token
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET,
+    () => {},
+  );
+
+  const idParam = req.headers.authorization.slice().split(' ')[2];
+
+  // console.log(decoded);
+  const Model =
+    idParam === 'admin'
+      ? Admin
+      : idParam === 'investor'
+        ? Investor
+        : Shareholder;
+
+  // 3) check if the user still exists
+  const currentUser = await Model.findById(decoded.id);
+
+  if (!currentUser) {
+    return next(
+      new AppError(`The user belonging to this token no longer exists`, 401),
+    );
+  }
+
+  // 4) check if user changed password after the JWT (token) was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError(`User recently changed password! Please login again`, 401),
+    );
+  }
+
+  // Grant access to protected route
+  req[idParam] = currentUser;
+  req.user = currentUser;
+  next();
+});
+
+const restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(`You do not have permission to perform this action`, 403),
+      );
+    }
+    next();
+  };
+
 module.exports = {
   deleteOne,
   updateOne,
@@ -129,4 +208,6 @@ module.exports = {
   getOne,
   getAllDocs,
   activateOne,
+  restrictTo,
+  protectAll,
 };
