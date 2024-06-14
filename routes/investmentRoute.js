@@ -10,12 +10,13 @@ const {
 const { protect } = require('../controllers/investors/investorAuthController');
 const { activateInvestment } = require('../controllers/admin/adminController');
 const { protectAdmin } = require('../controllers/admin/adminAuth');
+const { protectAll, restrictTo } = require('../controllers/handleFactory');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(protect, getAllInvestments)
+  .get(protectAll, getAllInvestments)
   .post(protect, setInvestorId, createInvestment);
 
 router.route('/activate-investment').patch(protectAdmin, activateInvestment);

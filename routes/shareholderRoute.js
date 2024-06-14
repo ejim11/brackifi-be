@@ -22,6 +22,7 @@ const {
 } = require('../controllers/shareholders/shareholderAuthController');
 const ordersRouter = require('./ordersRoute');
 const { activateUser } = require('../controllers/admin/adminController');
+const { protectAdmin } = require('../controllers/admin/adminAuth');
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ router
 
 router
   .route('/')
-  .get(protect, getAllShareholders)
+  .get(protectAdmin, getAllShareholders)
   .post(uploadAuthImages, resizeAuthImages, createShareholder);
 
 router.route('/:id').get(getShareholder);

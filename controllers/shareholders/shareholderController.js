@@ -130,7 +130,7 @@ const createPotentialShareholder = createOne(PotentialShareholder);
 
 const getAllPotentialShareHolders = getAllDocs(PotentialShareholder);
 
-const getAllShareholders = getAllDocs(Shareholder);
+const getAllShareholders = getAllDocs(Shareholder, { path: 'orders' });
 
 module.exports = {
   getAllPotentialShareHolders,
