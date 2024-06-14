@@ -90,7 +90,7 @@ const signInAdmin = catchAsync(async (req, res, next) => {
 });
 
 // middleware to protect tours route
-const protect = catchAsync(async (req, res, next) => {
+const protectAdmin = catchAsync(async (req, res, next) => {
   // 1) get the token and check if it exists
   let token;
   if (
@@ -232,7 +232,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 module.exports = {
   createAdmin,
   signInAdmin,
-  protect,
+  protectAdmin,
   forgotPassword,
   resetPassword,
   updatePassword,

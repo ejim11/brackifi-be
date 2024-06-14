@@ -23,8 +23,10 @@ const investmentRouter = require('./investmentRoute');
 const {
   uploadAuthImages,
   resizeAuthImages,
-} = require('../controllers/shareholders/shareholderAuthController');
+} = require('../controllers/investors/investorAuthController');
 const { activateInvestor } = require('../controllers/admin/adminController');
+const { protectAdmin } = require('../controllers/admin/adminAuth');
+const { restrictTo, protectAll } = require('../controllers/handleFactory');
 
 const router = express.Router();
 
@@ -49,10 +51,13 @@ router
 
 router
   .route('/')
-  .get(protect, getAllInvestors)
+  .get(protectAdmin, getAllInvestors)
   .post(uploadAuthImages, resizeAuthImages, createInvestor);
 
-router.route('/:id').get(protect, getAnInvestor).delete(deleteAnInvestor);
+router
+  .route('/:id')
+  .get(protectAll, restrictTo('admin', 'investor'), getAnInvestor)
+  .delete(deleteAnInvestor);
 
 router.route('/activate-investor').patch(activateInvestor);
 

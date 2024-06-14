@@ -131,7 +131,10 @@ const createPotentialInvestor = createOne(PotentialInvestor);
 
 const getAllPotentialInvestors = getAllDocs(PotentialInvestor);
 
-const getAllInvestors = getAllDocs(Investor);
+const getAllInvestors = getAllDocs(Investor, {
+  path: 'investments',
+  select: '-investor',
+});
 
 const getAnInvestor = getOne(Investor, {
   path: 'investments',

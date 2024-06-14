@@ -3,7 +3,7 @@ const express = require('express');
 const {
   createAdmin,
   signInAdmin,
-  protect,
+  protectAdmin,
   forgotPassword,
   resetPassword,
   updatePassword,
@@ -17,7 +17,7 @@ router.route('/login').post(signInAdmin);
 
 router.route('/forgotPassword').post(forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-router.patch('/updateMyPassword', protect, updatePassword);
+router.patch('/updateMyPassword', protectAdmin, updatePassword);
 
 router.route('/').post(uploadAdminAuthImage, resizeAdminAuthImage, createAdmin);
 
