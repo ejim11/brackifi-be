@@ -12,3 +12,6 @@
 html {
   box-sizing: border-box;
 }
+#con{
+  text-transform: capitalize;
+}

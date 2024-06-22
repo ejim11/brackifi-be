@@ -16,5 +16,5 @@ html
     .main 
       block content
     .footer
-      p.footer-link Don't like these emails? 
-      a(href=`${url}`) Unsubscribe 
+      p.footer-link= `${!firstName ? `Don't like these emails`: ''}`
+      a(href=`${url}`)= `${!firstName ? 'Unsubscribe': '' }`

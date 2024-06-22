@@ -60,11 +60,11 @@ class Email {
   }
 
   async sendWelcomeShareholder() {
-    await this.send('welcomeShareholder', 'Welcome to Brackifi');
+    await this.send('welcomeShareholder', 'Welcome to Brackifi Shareholders');
   }
 
   async sendWelcomeInvestor() {
-    await this.send('welcomeInvestor', 'Welcome to Brackifi');
+    await this.send('welcomeInvestor', 'Welcome to Brackifi Investors');
   }
 
   async sendPasswordReset() {

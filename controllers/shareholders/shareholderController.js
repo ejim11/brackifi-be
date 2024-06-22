@@ -124,13 +124,19 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-const getShareholder = getOne(Shareholder, { path: 'orders' });
+const getShareholder = getOne(Shareholder, {
+  path: 'orders',
+  select: '-shareholder',
+});
 
 const createPotentialShareholder = createOne(PotentialShareholder);
 
 const getAllPotentialShareHolders = getAllDocs(PotentialShareholder);
 
-const getAllShareholders = getAllDocs(Shareholder, { path: 'orders' });
+const getAllShareholders = getAllDocs(Shareholder, {
+  path: 'orders',
+  select: '-shareholder',
+});
 
 module.exports = {
   getAllPotentialShareHolders,

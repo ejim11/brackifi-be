@@ -95,8 +95,10 @@ const getAllDocs = (Model, popOptions) =>
     // To allow for nested get reviews on tour
     let filteredObj = {};
     let fields = '';
-    if (req.params.shareholderId)
+    if (req.params.shareholderId) {
       filteredObj = { shareholder: req.params.shareholderId };
+      fields = '-shareholder';
+    }
 
     if (req.params.investorId) {
       filteredObj = { investor: req.params.investorId };
