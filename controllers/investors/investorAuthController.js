@@ -253,7 +253,11 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     //   message,
     // });
 
-    new Email(investor, resetURL).sendPasswordReset();
+    await new Email(
+      investor,
+      resetURL,
+      process.env.EMAIL_SUPPORT,
+    ).sendPasswordReset();
 
     // const cookieOptions = {
     //   expires: new Date(
