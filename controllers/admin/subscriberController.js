@@ -9,7 +9,7 @@ const addSubscriber = catchAsync(async (req, res, next) => {
 
   const url = `${process.env.NODE_ENV === 'development' ? process.env.LOCAL_HOST : process.env.WEB_HOST}/api/v1/subscribers/unsubscribe/?subscriberId=${newSubscriber._id}`;
 
-  new Email(newSubscriber, url).sendSubscribed();
+  new Email(newSubscriber, url, process.env.EMAIL_SUPPORT).sendSubscribed();
 
   res.status(201).json({
     status: 'success',

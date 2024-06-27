@@ -4,6 +4,8 @@ const { promisify } = require('util');
 const crypto = require('crypto');
 const multer = require('multer');
 const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 const Investor = require('../../models/investorModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
@@ -33,11 +35,13 @@ const multerStorage = multer.memoryStorage();
 
 // function for filtering what kind of files it should store
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true);
-  } else {
-    cb(new AppError('Not an image, please upload only images', 400), false);
-  }
+  cb(null, true);
+
+  // if (file.mimetype.startsWith('image')) {
+  //   cb(null, true);
+  // } else {
+  //   cb(new AppError('Not an image, please upload only images', 400), false);
+  // }
 };
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
@@ -48,24 +52,67 @@ const uploadAuthImages = upload.fields([
 ]);
 
 const resizeAuthImages = catchAsync(async (req, res, next) => {
-  if (!req.files.proofOfAddress || !req.files.proofOfAddress) {
-    return next(new AppError(' please provide auth images', 400));
+  if (!req.files.proofOfIdentity || !req.files.proofOfAddress) {
+    return next(new AppError(' please provide auth files', 400));
   }
 
-  req.body.proofOfIdentity = `img-identity-${Date.now()}.jpeg`;
-  req.body.proofOfAddress = `img-address-${Date.now()}.jpeg`;
+  const isIdentityImg = req.files.proofOfIdentity[0].mimetype.includes('image');
 
-  await sharp(req.files.proofOfIdentity[0].buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/auth/investors/${req.body.proofOfIdentity}`);
+  const isAddressImg = req.files.proofOfAddress[0].mimetype.includes('image');
+  console.log(req.files.proofOfAddress);
 
-  await sharp(req.files.proofOfAddress[0].buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/auth/investors/${req.body.proofOfAddress}`);
+  req.body.proofOfIdentity = isIdentityImg
+    ? `img-identity-${Date.now()}.jpeg`
+    : req.files.proofOfIdentity[0].originalname;
+  req.body.proofOfAddress = isAddressImg
+    ? `img-address-${Date.now()}.jpeg`
+    : req.files.proofOfAddress[0].originalname;
+
+  if (isIdentityImg) {
+    await sharp(req.files.proofOfIdentity[0].buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/auth/investors/${req.body.proofOfIdentity}`);
+  } else {
+    // Define the path where you want to save the file
+    const filePath = path.join(
+      __dirname,
+      '/../../public/img/auth/investors',
+      req.body.proofOfIdentity,
+    );
+
+    // write the file into the file system
+    fs.writeFile(filePath, req.files.proofOfIdentity[0].buffer, async (err) => {
+      if (err) {
+        console.log(err);
+        return next(new AppError('Error saving file', 500));
+      }
+    });
+  }
+
+  if (isAddressImg) {
+    await sharp(req.files.proofOfAddress[0].buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/auth/investors/${req.body.proofOfAddress}`);
+  } else {
+    // Define the path where you want to save the file
+    const filePath = path.join(
+      __dirname,
+      '/../../public/img/auth/investors',
+      req.body.proofOfAdress,
+    );
+
+    // write the file into the file system
+    fs.writeFile(filePath, req.files.proofOfAddress[0].buffer, async (err) => {
+      if (err) {
+        console.log(err);
+        return next(new AppError('Error saving file', 500));
+      }
+    });
+  }
 
   next();
 });
@@ -82,7 +129,7 @@ const createInvestor = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  new Email(newInvestor, '').sendWelcomeInvestor();
+  new Email(newInvestor, '', process.env.EMAIL_TEAM).sendWelcomeInvestor();
 
   createSendToken(newInvestor, 201, res);
 });

@@ -12,11 +12,12 @@ const options = {
 };
 
 class Email {
-  constructor(user, url) {
+  constructor(user, url, from) {
     this.to = user.email;
     this.firstName = user.name ? user.name.split(' ')[0] : '';
     this.url = url;
-    this.from = `Brackifi <${process.env.EMAIL_FROM}>`;
+    this.from = `Brackifi <${from}>`;
+    this.username = from;
   }
 
   // create a transport for the email
@@ -26,7 +27,7 @@ class Email {
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
       auth: {
-        user: process.env.EMAIL_USERNAME,
+        user: this.username,
         pass: process.env.EMAIL_PASSWORD,
       },
       // for gmail, you need to activate the less secure app option
