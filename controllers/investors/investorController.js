@@ -36,13 +36,13 @@ const resizeProfilePhoto = catchAsync(async (req, res, next) => {
     .resize(2000, 1333)
     .toFormat('jpeg')
     .jpeg({ quality: 100 })
-    .toFile(`public/img/investor/profile/${req.file.filename}`);
+    .toFile(`/files/investors/${req.file.filename}`);
 
   next();
 });
 
 const updateProfileImage = catchAsync(async (req, res, next) => {
-  if (req.file) req.body.image = `img/investor/profile/${req.file.filename}`;
+  if (req.file) req.body.image = `/files/investors/${req.file.filename}`;
 
   const updatedInvestor = await Investor.findByIdAndUpdate(
     req.investor.id,
