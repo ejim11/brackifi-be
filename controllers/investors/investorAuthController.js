@@ -59,7 +59,6 @@ const resizeAuthImages = catchAsync(async (req, res, next) => {
   const isIdentityImg = req.files.proofOfIdentity[0].mimetype.includes('image');
 
   const isAddressImg = req.files.proofOfAddress[0].mimetype.includes('image');
-  console.log(req.files.proofOfAddress);
 
   req.body.proofOfIdentity = isIdentityImg
     ? `img-identity-${Date.now()}.jpeg`
@@ -98,15 +97,14 @@ const resizeAuthImages = catchAsync(async (req, res, next) => {
       .jpeg({ quality: 90 })
       .toFile(`public/img/auth/investors/${req.body.proofOfAddress}`);
   } else {
-    // Define the path where you want to save the file
-    const filePath = path.join(
+    const filesPath = path.join(
       __dirname,
       '/../../public/img/auth/investors',
-      req.body.proofOfAdress,
+      req.body.proofOfAddress,
     );
 
     // write the file into the file system
-    fs.writeFile(filePath, req.files.proofOfAddress[0].buffer, async (err) => {
+    fs.writeFile(filesPath, req.files.proofOfAddress[0].buffer, async (err) => {
       if (err) {
         console.log(err);
         return next(new AppError('Error saving file', 500));
