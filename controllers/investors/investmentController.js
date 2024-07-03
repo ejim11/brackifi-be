@@ -66,8 +66,6 @@ const makeWithdrawalRequest = catchAsync(async (req, res, next) => {
     },
   );
 
-  // console.log(updatedUser);
-
   // return updated user
   res.status(200).json({
     status: 'success',

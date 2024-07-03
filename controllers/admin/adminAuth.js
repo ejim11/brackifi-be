@@ -113,8 +113,6 @@ const protectAdmin = catchAsync(async (req, res, next) => {
     () => {},
   );
 
-  // console.log(decoded);
-
   // 3) check if the user still exists
   const currentUser = await Admin.findById(decoded.id);
 

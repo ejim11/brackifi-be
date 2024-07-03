@@ -144,7 +144,6 @@ const protectAll = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.slice().split(' ')[1];
-    console.log(token);
   }
 
   // 401- unauthorized
@@ -162,7 +161,6 @@ const protectAll = catchAsync(async (req, res, next) => {
 
   const idParam = req.headers.authorization.slice().split(' ')[2];
 
-  // console.log(decoded);
   const Model =
     idParam === 'admin'
       ? Admin

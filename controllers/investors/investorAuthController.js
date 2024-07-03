@@ -84,7 +84,6 @@ const resizeAuthImages = catchAsync(async (req, res, next) => {
     // write the file into the file system
     fs.writeFile(filePath, req.files.proofOfIdentity[0].buffer, async (err) => {
       if (err) {
-        console.log(err);
         return next(new AppError('Error saving file', 500));
       }
     });
@@ -106,7 +105,6 @@ const resizeAuthImages = catchAsync(async (req, res, next) => {
     // write the file into the file system
     fs.writeFile(filesPath, req.files.proofOfAddress[0].buffer, async (err) => {
       if (err) {
-        console.log(err);
         return next(new AppError('Error saving file', 500));
       }
     });
@@ -193,8 +191,6 @@ const protect = catchAsync(async (req, res, next) => {
     () => {},
   );
 
-  // console.log(decoded);
-
   // 3) check if the user still exists
   const currentUser = await Investor.findById(decoded.id);
 
@@ -275,7 +271,6 @@ const forgotPassword = catchAsync(async (req, res, next) => {
       message: 'Token sent to email',
     });
   } catch (err) {
-    console.log(err);
     investor.passwordResetToken = undefined;
     investor.passwordResetExpires = undefined;
     await investor.save({ validateBeforeSave: false });

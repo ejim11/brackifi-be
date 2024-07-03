@@ -62,7 +62,6 @@ const createDocAndReport = catchAsync(async (req, res, next) => {
   // Write the file to the file system
   fs.writeFile(filePath, req.files.docFile[0].buffer, async (err) => {
     if (err) {
-      console.log(err);
       return next(new AppError('Error saving file', 500));
     }
     req.body.docFile = `img/report/file/${originalname}`;

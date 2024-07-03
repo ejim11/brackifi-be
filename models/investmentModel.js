@@ -56,6 +56,10 @@ const investmentSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  contractPeriod: {
+    type: Date,
+    required: [true, 'Please select a contract period'],
+  },
   investor: {
     type: mongoose.Schema.ObjectId,
     ref: 'Investor',
