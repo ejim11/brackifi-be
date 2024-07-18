@@ -131,7 +131,13 @@ const createInvestor = catchAsync(async (req, res, next) => {
     process.env.EMAIL_TEAM,
   ).sendWelcomeInvestor();
 
-  createSendToken(newInvestor, 201, res);
+  // createSendToken(newInvestor, 201, res);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      newInvestor,
+    },
+  });
 });
 
 const signInInvestor = catchAsync(async (req, res, next) => {

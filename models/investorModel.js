@@ -84,6 +84,7 @@ const investorSchema = new mongoose.Schema(
 );
 
 // virtual populate
+// This virtually populates the investor with their investments
 investorSchema.virtual('investments', {
   ref: 'Investment',
   foreignField: 'investor',
@@ -93,12 +94,13 @@ investorSchema.virtual('investments', {
 investorSchema.pre(/^find/, function (next) {
   // (this) points to the current query
 
+  // this finds all the investors with active set to true
   this.find({ active: { $ne: false } });
   next();
 });
 
 investorSchema.pre('save', async function (next) {
-  // run func if password was modified
+  // run next func(skip) if password was not modified
   if (!this.isModified('password')) return next();
 
   //   hashing the password with cost of 12
@@ -107,12 +109,15 @@ investorSchema.pre('save', async function (next) {
 });
 
 investorSchema.pre('save', async function (next) {
+  // if password was not modified and it is a new password then skip
   if (!this.isModified('password') || this.isNew) return next();
 
+  // set the time the password was updated if it was modified
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
+// checking if the passwords match when investor login
 investorSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword,
@@ -120,6 +125,7 @@ investorSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+// checking when the investor changes the password
 investorSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
