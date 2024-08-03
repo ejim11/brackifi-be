@@ -24,7 +24,7 @@ router.route('/activate-investment').patch(protectAdmin, activateInvestment);
 router
   .route('/:id')
   .get(getInvestment)
-  .delete(deleteInvestment)
+  .delete(protectAdmin, deleteInvestment)
   .patch(makeWithdrawalRequest);
 
 router
