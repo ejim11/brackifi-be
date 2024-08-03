@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const investmentSchema = new mongoose.Schema({
+  hash: {
+    type: String,
+    required: [true, 'Please provide your wallet address'],
+    unique: true,
+  },
   address: {
     type: String,
     required: [true, 'Please provide your wallet address'],
