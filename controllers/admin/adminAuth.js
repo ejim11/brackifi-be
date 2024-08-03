@@ -118,7 +118,7 @@ const protectAdmin = catchAsync(async (req, res, next) => {
 
   if (!currentUser) {
     return next(
-      new AppError(`The user belonging to this token no longer exists`, 401),
+      new AppError(`The user belonging to this token does not exist`, 401),
     );
   }
 

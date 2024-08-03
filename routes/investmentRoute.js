@@ -10,7 +10,7 @@ const {
 const { protect } = require('../controllers/investors/investorAuthController');
 const { activateInvestment } = require('../controllers/admin/adminController');
 const { protectAdmin } = require('../controllers/admin/adminAuth');
-const { protectAll } = require('../controllers/handleFactory');
+const { protectAll, restrictTo } = require('../controllers/handleFactory');
 
 const router = express.Router({ mergeParams: true });
 
@@ -24,7 +24,7 @@ router.route('/activate-investment').patch(protectAdmin, activateInvestment);
 router
   .route('/:id')
   .get(getInvestment)
-  .delete(protectAdmin, deleteInvestment)
+  .delete(protectAll, restrictTo('admin'), deleteInvestment)
   .patch(makeWithdrawalRequest);
 
 router
