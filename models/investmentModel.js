@@ -56,6 +56,7 @@ const investmentSchema = new mongoose.Schema({
   },
   activeDate: {
     type: Date,
+    default: Date.now(),
   },
   payoutAvailable: {
     type: Number,
