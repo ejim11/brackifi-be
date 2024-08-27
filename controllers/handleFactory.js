@@ -6,7 +6,6 @@ const AppError = require('../utils/appError');
 const { APIFeatures } = require('../utils/apiFeatures');
 const Admin = require('../models/adminModel');
 const Investor = require('../models/investorModel');
-const Shareholder = require('../models/shareholderModel');
 
 const deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -161,12 +160,7 @@ const protectAll = catchAsync(async (req, res, next) => {
 
   const idParam = req.headers.authorization.slice().split(' ')[2];
 
-  const Model =
-    idParam === 'admin'
-      ? Admin
-      : idParam === 'investor'
-        ? Investor
-        : Shareholder;
+  const Model = idParam === 'admin' ? Admin : Investor;
 
   // 3) check if the user still exists
   const currentUser = await Model.findById(decoded.id);

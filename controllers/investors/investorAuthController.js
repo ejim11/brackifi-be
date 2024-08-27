@@ -125,11 +125,11 @@ const createInvestor = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  await new Email(
-    newInvestor,
-    '',
-    process.env.EMAIL_TEAM,
-  ).sendWelcomeInvestor();
+  // await new Email(
+  //   newInvestor,
+  //   '',
+  //   process.env.EMAIL_TEAM,
+  // ).sendWelcomeInvestor();
 
   // createSendToken(newInvestor, 201, res);
   res.status(201).json({
