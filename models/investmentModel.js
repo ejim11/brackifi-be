@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const investmentSchema = new mongoose.Schema({
-  hash: {
-    type: String,
-    required: [true, 'Please provide your wallet address'],
-    unique: true,
-  },
+  // hash: {
+  //   type: String,
+  //   required: [true, 'Please provide your wallet address'],
+  //   unique: true,
+  // },
   address: {
     type: String,
     required: [true, 'Please provide your wallet address'],
@@ -20,14 +20,14 @@ const investmentSchema = new mongoose.Schema({
   },
   nextPayout: {
     type: Date,
-    default: () => {
-      const today = new Date();
+    // default: () => {
+    //   const today = new Date();
 
-      // Add 4 months to today's date
-      const futureDate = new Date();
-      futureDate.setMonth(today.getMonth() + 4);
-      return futureDate;
-    },
+    //   // Add 4 months to today's date
+    //   const futureDate = new Date();
+    //   futureDate.setMonth(today.getMonth() + 4);
+    //   return futureDate;
+    // },
   },
   roi: {
     type: Number,
@@ -45,7 +45,7 @@ const investmentSchema = new mongoose.Schema({
   },
   investmentState: {
     type: String,
-    default: 'active',
+    default: 'inactive',
     enum: [
       'inactive',
       'active',
@@ -56,7 +56,7 @@ const investmentSchema = new mongoose.Schema({
   },
   activeDate: {
     type: Date,
-    default: Date.now(),
+    // default: Date.now(),
   },
   payoutAvailable: {
     type: Number,
@@ -70,11 +70,6 @@ const investmentSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Investor',
   },
-});
-
-investmentSchema.pre(/^find/, async function (next) {
-  this.populate({ path: 'investor', select: 'name' });
-  next();
 });
 
 investmentSchema.pre(/^find/, async function (next) {
