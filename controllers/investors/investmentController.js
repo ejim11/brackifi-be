@@ -1,6 +1,5 @@
 const Investment = require('../../models/investmentModel');
 const {
-  createOne,
   getAllDocs,
   getOne,
   //   updateOne,
@@ -8,6 +7,9 @@ const {
 } = require('../handleFactory');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
+const Investor = require('../../models/investorModel');
+const Email = require('../../utils/email');
+const formatAmount = require('../../utils/formatAmount');
 
 const setInvestorId = (req, res, next) => {
   if (!req.body.investor) req.body.investor = req.investor.id;
@@ -15,7 +17,26 @@ const setInvestorId = (req, res, next) => {
 };
 
 // // create an investment
-const createInvestment = createOne(Investment);
+const createInvestment = catchAsync(async (req, res, next) => {
+  const doc = await Investment.create(req.body);
+
+  const investor = await Investor.findById(req.body.investor);
+
+  await new Email(
+    investor,
+    '',
+    process.env.EMAIL_FROM,
+    formatAmount(doc.amount),
+    new Date().toDateString(),
+  ).sendDepositEmail();
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      doc,
+    },
+  });
+});
 
 // get all Investment
 const getAllInvestments = getAllDocs(Investment);
