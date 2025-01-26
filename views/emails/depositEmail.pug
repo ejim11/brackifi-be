@@ -1,0 +1,10 @@
+extends baseEmail
+ 
+block content
+   .container 
+      p.name Hello #{firstName}, 
+      p We are currently reviewing your deposit of  $#{amount} on #{date}. Once we confirm payment, we will activate your investment
+      p Thank you for choosing Brackifi!
+      div 
+         p Best regards,
+         p Brackifi Team.
