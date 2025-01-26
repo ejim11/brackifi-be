@@ -12,12 +12,14 @@ const options = {
 };
 
 class Email {
-  constructor(user, url, from) {
+  constructor(user, url, from, amount, date) {
     this.to = user.email;
     this.firstName = user.name ? user.name.split(' ')[0] : '';
     this.url = url;
     this.from = `Brackifi <${from}>`;
     this.username = from;
+    this.amount = amount;
+    this.date = date;
   }
 
   // create a transport for the email
@@ -39,7 +41,13 @@ class Email {
     // render html based on the pug template
     const html = pug.renderFile(
       `${__dirname}/../views/emails/${template}.pug`,
-      { firstName: this.firstName, url: this.url, subject },
+      {
+        firstName: this.firstName,
+        url: this.url,
+        subject,
+        amount: this.amount,
+        date: this.date,
+      },
     );
 
     // mail options
@@ -72,6 +80,13 @@ class Email {
     await this.send(
       'passwordReset',
       'Your password reset token, valid for 10mins',
+    );
+  }
+
+  async sendDepositEmail() {
+    await this.send(
+      'depositEmail',
+      'Your deposit is being reviewed by Brackifi',
     );
   }
 }
