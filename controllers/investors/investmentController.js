@@ -7,7 +7,6 @@ const {
 } = require('../handleFactory');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
-const Investor = require('../../models/investorModel');
 const Email = require('../../utils/email');
 const formatAmount = require('../../utils/formatAmount');
 
@@ -20,10 +19,8 @@ const setInvestorId = (req, res, next) => {
 const createInvestment = catchAsync(async (req, res, next) => {
   const doc = await Investment.create(req.body);
 
-  const investor = await Investor.findById(req.body.investor);
-
   await new Email(
-    investor,
+    req.investor,
     '',
     process.env.EMAIL_FROM,
     formatAmount(doc.amount),
@@ -86,6 +83,14 @@ const makeWithdrawalRequest = catchAsync(async (req, res, next) => {
       runValidators: true,
     },
   );
+
+  await new Email(
+    req.investor,
+    '',
+    process.env.EMAIL_FROM,
+    formatAmount(updatedInvestment.amount),
+    new Date().toDateString(),
+  ).sendWithdrawalEmail();
 
   // return updated user
   res.status(200).json({
