@@ -86,7 +86,14 @@ class Email {
   async sendDepositEmail() {
     await this.send(
       'depositEmail',
-      'Your deposit is being reviewed by Brackifi',
+      'Your deposit is being reviewed by Brackifi 💰',
+    );
+  }
+
+  async sendWithdrawalEmail() {
+    await this.send(
+      'withdrawalEmail',
+      'Your withdrawal request is being reviewed by Brackifi 💰',
     );
   }
 }

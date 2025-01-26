@@ -1,0 +1,11 @@
+extends baseEmail
+ 
+block content
+   .container 
+      p.name Hello #{firstName}, 
+      p We are currently reviewing your withdrawal request of  $#{amount} on #{date}. Once we confirm your details, we will send your funds to the address you used to deposit.
+      p Incase you want to change your withdrawal address for this process, please contact us by replying to this mail address with the details.
+      p Thank you for choosing Brackifi!
+      div 
+         p Best regards,
+         p Brackifi Team.
