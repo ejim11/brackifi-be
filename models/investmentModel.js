@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const investmentSchema = new mongoose.Schema({
-  // hash: {
-  //   type: String,
-  //   required: [true, 'Please provide your wallet address'],
-  //   unique: true,
-  // },
   address: {
     type: String,
     required: [true, 'Please provide your wallet address'],
@@ -20,14 +15,6 @@ const investmentSchema = new mongoose.Schema({
   },
   nextPayout: {
     type: Date,
-    // default: () => {
-    //   const today = new Date();
-
-    //   // Add 4 months to today's date
-    //   const futureDate = new Date();
-    //   futureDate.setMonth(today.getMonth() + 4);
-    //   return futureDate;
-    // },
   },
   roi: {
     type: Number,
@@ -56,7 +43,6 @@ const investmentSchema = new mongoose.Schema({
   },
   activeDate: {
     type: Date,
-    // default: Date.now(),
   },
   payoutAvailable: {
     type: Number,
