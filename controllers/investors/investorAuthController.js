@@ -128,7 +128,7 @@ const createInvestor = catchAsync(async (req, res, next) => {
   await new Email(
     newInvestor,
     '',
-    process.env.EMAIL_SUPPORT,
+    process.env.EMAIL_FROM,
   ).sendWelcomeInvestor();
 
   // createSendToken(newInvestor, 201, res);
@@ -256,7 +256,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     await new Email(
       investor,
       resetURL,
-      process.env.EMAIL_SUPPORT,
+      process.env.EMAIL_FROM,
     ).sendPasswordReset();
 
     // const cookieOptions = {
