@@ -119,6 +119,7 @@ const createInvestor = catchAsync(async (req, res, next) => {
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
     address: req.body.address,
+    ubitexId: req.body.ubitexId || undefined,
     proofOfIdentity: req.body.proofOfIdentity,
     proofOfAddress: req.body.proofOfAddress,
     password: req.body.password,
