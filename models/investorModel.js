@@ -14,6 +14,10 @@ const investorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide an address'],
     },
+    ubitexId: {
+      type: String,
+      required: false,
+    },
     isLoginActivated: {
       type: Boolean,
       default: false,
