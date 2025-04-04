@@ -52,6 +52,11 @@ const investmentSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Please select a contract period'],
   },
+  investmentType: {
+    type: String,
+    required: [true, 'Please select type of investment'],
+    enum: ['crypto', 'stock', 'forex'],
+  },
   investor: {
     type: mongoose.Schema.ObjectId,
     ref: 'Investor',
