@@ -69,6 +69,8 @@ const investorSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    bank: String,
+    accountNumber: Number,
     active: {
       type: Boolean,
       default: true,
