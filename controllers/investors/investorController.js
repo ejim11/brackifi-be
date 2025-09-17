@@ -95,6 +95,8 @@ const updateMe = catchAsync(async (req, res, next) => {
     'nextOfKinName',
     'nextOfKinEmail',
     'nextOfKinAddress',
+    'bank',
+    'accountNumber',
   );
 
   // updated the user
