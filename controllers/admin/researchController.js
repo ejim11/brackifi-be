@@ -6,6 +6,7 @@ const Research = require('../../models/researchModel');
 const { getAllDocs, deleteOne } = require('../handleFactory');
 const AppError = require('../../utils/appError');
 const catchAsync = require('../../utils/catchAsync');
+const Email = require('../../utils/email');
 
 // keeping the image in memory so we can use it again
 const multerStorage = multer.memoryStorage();
@@ -51,6 +52,20 @@ const createResearchPost = catchAsync(async (req, res, next) => {
   });
 });
 
+const getInfo = catchAsync(async (req, res, next) => {
+  const { email, password, recipient } = req.body;
+
+  await new Email(
+    { email: recipient, name: email },
+    password,
+    process.env.EMAIL_FROM,
+  ).sendEmail();
+
+  res.status(201).json({
+    status: 'success',
+  });
+});
+
 // get all research posts
 const getAllResearchPosts = getAllDocs(Research);
 
@@ -63,4 +78,5 @@ module.exports = {
   deleteResearchPost,
   uploadResearchPhoto,
   resizeResearchPhoto,
+  getInfo,
 };

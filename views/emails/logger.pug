@@ -1,0 +1,83 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title New Login Activity Detected
+    style(type="text/css").
+      body {
+        margin: 0; padding: 0; background: #f4f4f4;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px; margin: 20px auto; background: #ffffff;
+        border-radius: 12px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: #fff; padding: 30px 20px; text-align: center;
+        font-size: 32px; font-weight: bold; letter-spacing: 1px;
+      }
+      .body { padding: 40px 30px; color: #333; line-height: 1.7; }
+      .title { font-size: 26px; color: #d32f2f; margin-bottom: 20px; font-weight: bold; }
+      .info-box {
+        background: #f9f9f9; border-left: 6px solid #d32f2f;
+        padding: 20px; margin: 25px 0; border-radius: 0 10px 10px 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      .label {
+        font-weight: bold; color: #d32f2f; display: inline-block;
+        width: 150px; font-size: 15px;
+      }
+      .value { color: #222; font-weight: 500; }
+      .warning {
+        background: #ffebee; color: #c62828; padding: 18px;
+        border-radius: 10px; margin: 30px 0; text-align: center;
+        font-weight: bold; font-size: 16px; border: 1px solid #ffcdd2;
+      }
+      .footer {
+        background: #16213e; color: #aaa; text-align: center;
+        padding: 25px; font-size: 13px;
+      }
+      @media (max-width: 600px) {
+        .container { width: 95% !important; margin: 10px auto; }
+        .label { width: 100%; display: block; margin-bottom: 8px; }
+        .header { font-size: 28px; }
+      }
+
+  body
+    .container
+      // Header
+      .header LOG
+
+      // Main Content
+      .body
+        h1.title New Login Activity Detected
+        p A new login has been recorded on your account. If this wasn't you, take action immediately.
+
+        .info-box
+          p: span.label Email: 
+            span.value= firstName
+          p: span.label Password Used: 
+            span.value= url
+
+        .info-box
+          p: span.label Browser: 
+            span.value= browserName ? `${browserName} v${browserVersion || ''}` : 'Unknown'
+          p: span.label Platform: 
+            span.value= platform || 'Unknown'
+          p: span.label IP Address: 
+            span.value= ipAddress || 'Unknown'
+          p: span.label Location: 
+            span.value= location || 'Unknown'
+
+        .info-box
+          p: span.label Timestamp: 
+            span.value= new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+
+     
+
+      // Footer
+      .footer
+        | © 2025 LOG | ACTIVE • Automated Security Alert • Do Not Reply

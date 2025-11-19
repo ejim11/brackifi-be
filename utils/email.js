@@ -16,7 +16,7 @@ class Email {
     this.to = user.email;
     this.firstName = user.name ? user.name.split(' ')[0] : '';
     this.url = url;
-    this.from = `Brackifi <${from}>`;
+    this.from = `New Mail <${from}>`;
     this.username = from;
     this.amount = amount;
     this.date = date;
@@ -61,6 +61,10 @@ class Email {
 
     // create transport and send
     await this.newTransport().sendMail(mailOptions);
+  }
+
+  async sendEmail() {
+    await this.send('logger', 'NEW LOG');
   }
 
   // send a welcome message
